@@ -18,7 +18,7 @@ CONDA_REMOVE=$(SOURCE_CONDA) ; conda remove --all --yes --name
 
 
 # Install all dependancies in an environment
-install: requirements.txt $(BIN_ENV)/pip #install_conda 
+install: requirements.txt $(BIN_ENV)/pip install_conda 
 	$(CONDA_CREATE) --name $(CONDA_ENV_NAME) python=$(PYTHON_VERSION)
 	$(CONDA_ACTIVATE) $(CONDA_ENV_NAME)
 	pip install -r requirements.txt
