@@ -5,3 +5,4 @@ models/
 brouillon.txt
 photo_capturee.jpg
 meilleur_modele.h5
+*.keras
