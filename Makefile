@@ -18,13 +18,22 @@ CONDA_REMOVE=$(SOURCE_CONDA) ; conda remove --all --yes --name
 
 
 # Install all dependancies in an environment
-install: requirements.txt $(BIN_ENV)/pip install_conda 
+install: requirements.txt $(BIN_ENV)/pip  $(BIN_ENV)/conda 
 	$(CONDA_CREATE) --name $(CONDA_ENV_NAME) python=$(PYTHON_VERSION)
 	$(CONDA_ACTIVATE) $(CONDA_ENV_NAME)
 	pip install -r requirements.txt
 
 install_conda: $(BIN_ENV)/sudo $(BIN_ENV)/apt 
-	sudo apt install conda
+	sudo -i
+	# Install our public GPG key to trusted store
+	curl https://repo.anaconda.com/pkgs/misc/gpgkeys/anaconda.asc | gpg --dearmor > conda.gpg
+	install -o root -g root -m 644 conda.gpg /usr/share/keyrings/conda-archive-keyring.gpg
+	# Check whether fingerprint is correct (will output an error message otherwise)
+	gpg --keyring /usr/share/keyrings/conda-archive-keyring.gpg --no-default-keyring --fingerprint 34161F5BF5EB1D4BFBBB8F0A8AEB4F8B29D82806
+	# Add our Debian repo
+	echo "deb [arch=amd64 signed-by=/usr/share/keyrings/conda-archive-keyring.gpg] https://repo.anaconda.com/pkgs/misc/debrepo/conda stable main" > /etc/apt/sources.list.d/conda.list
+	apt update
+	apt install conda --yes
 
 # Start 
 run: 
