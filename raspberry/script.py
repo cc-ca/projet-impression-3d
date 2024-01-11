@@ -21,7 +21,6 @@ pin_red = 13
 pin_green = 19
 pin_blue = 26
 pin_button = 6
-color_sequence = ["green", "red", "blue", "off"]
 model = load_model('model.h5')
 
 
@@ -49,12 +48,6 @@ def change_color(color):
         GPIO.output(pin_red, GPIO.LOW)
         GPIO.output(pin_green, GPIO.LOW)
         GPIO.output(pin_blue, GPIO.LOW)
-
-
-
-
-def change_color(x):
-    pass
 
 try:
     state = "blue"
