@@ -30,6 +30,7 @@ def change_color(color):
         GPIO.output(pin_blue, GPIO.HIGH)
 
 try:
+    print("Programme en cours")
     state = "blue"
     change_color(state)
     consecutive_failures = 0
@@ -38,7 +39,7 @@ try:
         if state == "blue":  # On passe à l'état en marche
             state = "green"
             change_color(state)
-            result = tools.predict(model)  # Appel du modele d'IA
+            result = tools.capture(model)  # Appel du modele d'IA
             print(result)
             
             while result == "ok":
@@ -57,5 +58,6 @@ try:
 except KeyboardInterrupt:
     pass
 finally:
+    print("Fin programme")
     change_color("off")
     GPIO.cleanup()
