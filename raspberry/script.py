@@ -57,7 +57,6 @@ def evaluate_model(cap):
 
 def run():
     try:
-        cap = cv2.VideoCapture(0) # Ouvrir la webcam (la webcam par défaut a l'ID 0)
         while True:
             end_time = time.time() + RUN_DURATION
             success_count = 0
@@ -81,7 +80,6 @@ def run():
                 break
             print("pas depassement seuil")
     finally:
-        cap.release()
         change_color(Color.IDLE)
         
 
