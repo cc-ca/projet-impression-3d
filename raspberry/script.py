@@ -5,8 +5,8 @@ from tensorflow.keras.models import load_model
 import tools
 
 # Définir les broches GPIO pour chaque couleur de la LED et le bouton
-pin_red = 13
-pin_green = 19
+pin_red = 19
+pin_green = 13
 pin_blue = 26
 pin_button = 6
 model = load_model('model.h5')
@@ -41,7 +41,7 @@ try:
     while True:
         result = tools.capture(model, cap)  # Appel du modele d'IA
         print(result)
-        if(result == "ok"):
+        if(result == "OK"):
             change_color("green")
         else :
             change_color("red")
