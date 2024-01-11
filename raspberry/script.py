@@ -27,8 +27,9 @@ GPIO.setup(pin_blue, GPIO.OUT)
 GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Constants
-RUN_DURATION = 300
+RUN_DURATION = 60
 SLEEP_INTERVAL = 5
+SLEEP_LED = 0.001
 CONFIDENCE_THRESHOLD = 0.9
 model = load_model('model.h5')
 
@@ -65,6 +66,7 @@ def run():
             while time.time() < end_time:
                 color = evaluate_model(cap)
                 change_color(Color.OFF)
+                time.sleep(0.001)
                 change_color(color)
     
                 if color == Color.ERROR:
@@ -75,7 +77,9 @@ def run():
                 time.sleep(SLEEP_INTERVAL)
                 
             if failure_count/(success_count+failure_count) >= CONFIDENCE_THRESHOLD:
+                print("depassement seuil")
                 break
+            print("pas depassement seuil")
     finally:
         cap.release()
         change_color(Color.IDLE)

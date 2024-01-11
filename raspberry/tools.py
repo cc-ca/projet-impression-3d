@@ -1,8 +1,11 @@
+from PIL import Image
 import numpy as np
+import matplotlib.pyplot as plt
 import cv2
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    plt.imshow(img)
     img = cv2.resize(img, (255, 255))  # Assurez-vous que la taille correspond à celle utilisée lors de l'entraînement
     img = img / 255.0  # Normalisez les valeurs des pixels
     img = np.expand_dims(img, axis=0)  # Ajoutez une dimension pour représenter le lot (batch)
@@ -22,8 +25,9 @@ def predict_defect_multi_class(model, image_path):
 
 
 
-def capture(model, cap):
-  
+def capture(model):
+  # Ouvrir la webcam (la webcam par défaut a l'ID 0)
+  cap = cv2.VideoCapture(0)
   # Vérifier si la webcam est ouverte correctement
   if not cap.isOpened():
       print("Erreur: Impossible d'ouvrir la webcam.")
@@ -35,6 +39,10 @@ def capture(model, cap):
       cv2.imwrite("photo_capturee.jpg", frame)
       print("Photo capturée avec succès.")
       result = predict_defect_multi_class(model, 'photo_capturee.jpg')
+      img = Image.open('photo_capturee.jpg')
+      plt.imshow(img)
+      plt.axis('off')  # Masquer les axes
+      plt.show()
       return(result)
     
     
