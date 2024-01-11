@@ -1,15 +1,5 @@
-from PIL import Image 
-from tensorflow import keras
-from tensorflow.keras import layers
-
 import numpy as np
-import matplotlib.pyplot as plt
-
-import os
 import cv2
-import random
-import time
-import datetime
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -52,6 +42,3 @@ def capture(model, cap):
   else:
       print("Erreur lors de la capture de la photo.")
       return('error')
-
-  # Libérer la webcam
-  
