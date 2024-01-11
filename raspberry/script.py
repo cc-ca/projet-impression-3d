@@ -46,8 +46,8 @@ def change_color(color):
     elif color == Color.IDLE:
         GPIO.output(pin_blue, GPIO.HIGH)
 
-def evaluate_model(cap):
-    result = tools.capture(model, cap)
+def evaluate_model():
+    result = tools.capture(model)
     print(result)
 
     if result == "OK":
@@ -63,7 +63,7 @@ def run():
             failure_count = 0
             
             while time.time() < end_time:
-                color = evaluate_model(cap)
+                color = evaluate_model()
                 change_color(Color.OFF)
                 time.sleep(0.001)
                 change_color(color)
