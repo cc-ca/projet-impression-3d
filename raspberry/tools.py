@@ -13,7 +13,6 @@ import datetime
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    plt.imshow(img)
     img = cv2.resize(img, (255, 255))  # Assurez-vous que la taille correspond à celle utilisée lors de l'entraînement
     img = img / 255.0  # Normalisez les valeurs des pixels
     img = np.expand_dims(img, axis=0)  # Ajoutez une dimension pour représenter le lot (batch)
@@ -33,9 +32,8 @@ def predict_defect_multi_class(model, image_path):
 
 
 
-def capture(model):
-  # Ouvrir la webcam (la webcam par défaut a l'ID 0)
-  cap = cv2.VideoCapture(0)
+def capture(model, cap):
+  
   # Vérifier si la webcam est ouverte correctement
   if not cap.isOpened():
       print("Erreur: Impossible d'ouvrir la webcam.")
@@ -48,18 +46,16 @@ def capture(model):
       print("Photo capturée avec succès.")
       result = predict_defect_multi_class(model, 'photo_capturee.jpg')
       img = Image.open('photo_capturee.jpg')
-      #plt.imshow(img)
-      #plt.axis('off')  # Masquer les axes
-      #now = datetime.datetime.now().strftime("%H:%M:%S")
-      #plt.show()
-      cap.release()
+      plt.imshow(img)
+      plt.axis('off')  # Masquer les axes
+      now = datetime.datetime.now().strftime("%H:%M:%S")
+      plt.show()
       return(result)
     
     
 
   else:
       print("Erreur lors de la capture de la photo.")
-      cap.release()
       return('error')
 
   # Libérer la webcam

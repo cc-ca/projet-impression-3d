@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import cv2
 from tensorflow.keras.models import load_model
 import tools
 
@@ -31,25 +32,25 @@ def change_color(color):
 
 try:
     print("Programme en cours")
-    state = "blue"
-    change_color(state)
+    # Ouvrir la webcam (la webcam par défaut a l'ID 0)
+    cap = cv2.VideoCapture(0)
+    change_color("blue")
     time.sleep(2)
     consecutive_failures = 0
     
     while True:
-        result = tools.capture(model)  # Appel du modele d'IA
+        result = tools.capture(model, cap)  # Appel du modele d'IA
         print(result)
         if(result == "ok"):
-            state = "green"
-            change_color(state)
+            change_color("green")
         else :
-            state = "red"
-            change_color(state)
+            change_color("red")
         time.sleep(5)
 
 except KeyboardInterrupt:
     pass
 finally:
     print("Fin programme")
+    cap.release()
     change_color("off")
     GPIO.cleanup()
