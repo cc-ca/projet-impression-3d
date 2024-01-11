@@ -33,27 +33,19 @@ try:
     print("Programme en cours")
     state = "blue"
     change_color(state)
+    time.sleep(2)
     consecutive_failures = 0
     
     while True:
-        if state == "blue":  # On passe à l'état en marche
+        result = tools.capture(model)  # Appel du modele d'IA
+        print(result)
+        if(result == "ok"):
             state = "green"
             change_color(state)
-            result = tools.capture(model)  # Appel du modele d'IA
-            print(result)
-            
-            while result == "ok":
-                time.sleep(5)
-                result = tools.predict(model)
-                
-                if result in ["spaghetti", "bed not stick"]:
-                    consecutive_failures += 1
-                    if consecutive_failures == 10:
-                        state = "red"
-                        change_color(state)
-                        break
-                else:
-                    consecutive_failures = 0
+        else :
+            state = "red"
+            change_color(state)
+        time.sleep(5)
 
 except KeyboardInterrupt:
     pass
