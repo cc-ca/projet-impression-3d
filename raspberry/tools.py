@@ -25,9 +25,7 @@ def predict_defect_multi_class(model, image_path):
 
 
 
-def capture(model):
-  # Ouvrir la webcam (la webcam par défaut a l'ID 0)
-  cap = cv2.VideoCapture(0)
+def capture(model, cap):
   # Vérifier si la webcam est ouverte correctement
   if not cap.isOpened():
       print("Erreur: Impossible d'ouvrir la webcam.")
