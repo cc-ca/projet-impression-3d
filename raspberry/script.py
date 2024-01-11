@@ -58,6 +58,7 @@ def change_color(x):
 
 try:
     state = "blue"
+    change_color(state)
     consecutive_failures = 0
     
     while True:
