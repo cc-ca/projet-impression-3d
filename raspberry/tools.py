@@ -13,6 +13,7 @@ import datetime
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    plt.imshow(img)
     img = cv2.resize(img, (255, 255))  # Assurez-vous que la taille correspond à celle utilisée lors de l'entraînement
     img = img / 255.0  # Normalisez les valeurs des pixels
     img = np.expand_dims(img, axis=0)  # Ajoutez une dimension pour représenter le lot (batch)
