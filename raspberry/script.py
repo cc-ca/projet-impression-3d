@@ -75,17 +75,25 @@ def run():
 
             # Use history to calculate success and failure counts
             current_time = time.localtime()
-            recent_history = [entry[0] for entry in history if entry[1] > current_time - 300]
-            success_count = recent_history.count("OK")
-            failure_count = recent_history.count("ERROR")
-            
-            error_rate = failure_count / (success_count + failure_count)
-            if error_rate >= CONFIDENCE_THRESHOLD:
-                print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
-                break
-            print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+
+            # Filter history for entries within the last 5 minutes
+            recent_history = [entry[0] for entry in history if entry[1] > current_time - (RUN_DURATION * SLEEP_INTERVAL)]
+
+            # Check if there are enough elements in history for calculation
+            if len(recent_history) >= 50:  # Assuming a measurement every second for 5 minutes
+                success_count = recent_history.count("OK")
+                failure_count = recent_history.count("ERROR")
+                
+                error_rate = failure_count / (success_count + failure_count)
+                if error_rate >= CONFIDENCE_THRESHOLD:
+                    print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+                    break
+                print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+            else:
+                print("Pas assez d'éléments dans l'historique pour le calcul.")
     finally:
         change_color(Color.IDLE)
+
 
 if __name__ == "__main__":
     try:
