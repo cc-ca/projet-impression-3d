@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import climage
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -39,6 +40,8 @@ def capture(model):
       print("Photo capturée avec succès.")
       result = predict_defect_multi_class(model, 'photo_capturee.jpg')
       img = Image.open('photo_capturee.jpg')
+      output = climage.convert('photo_capturee.jpg')
+      print(output)
       plt.imshow(img)
       plt.axis('off')  # Masquer les axes
       plt.show()
