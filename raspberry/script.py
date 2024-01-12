@@ -64,8 +64,6 @@ def run():
     try:
     while True:
         end_time = time.time() + RUN_DURATION
-        success_count = 0
-        failure_count = 0
         
         while time.time() < end_time:
             color = evaluate_model()
@@ -73,11 +71,6 @@ def run():
             time.sleep(SLEEP_LED)
             change_color(color)
 
-            if color == Color.ERROR:
-                failure_count += 1
-            elif color == Color.CORRECT:
-                success_count += 1
-                
             time.sleep(SLEEP_INTERVAL)
 
         # Use history to calculate success and failure counts
