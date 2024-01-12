@@ -62,28 +62,28 @@ def evaluate_model():
 
 def run():
     try:
-    while True:
-        end_time = time.time() + RUN_DURATION
-        
-        while time.time() < end_time:
-            color = evaluate_model()
-            change_color(Color.OFF)
-            time.sleep(SLEEP_LED)
-            change_color(color)
+        while True:
+            end_time = time.time() + RUN_DURATION
+            
+            while time.time() < end_time:
+                color = evaluate_model()
+                change_color(Color.OFF)
+                time.sleep(SLEEP_LED)
+                change_color(color)
 
-            time.sleep(SLEEP_INTERVAL)
+                time.sleep(SLEEP_INTERVAL)
 
-        # Use history to calculate success and failure counts
-        current_time = time.localtime()
-        recent_history = [entry[0] for entry in history if entry[1] > current_time - 300]
-        success_count = recent_history.count("OK")
-        failure_count = recent_history.count("ERROR")
-        
-        error_rate = failure_count / (success_count + failure_count)
-        if error_rate >= CONFIDENCE_THRESHOLD:
-            print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
-            break
-        print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+            # Use history to calculate success and failure counts
+            current_time = time.localtime()
+            recent_history = [entry[0] for entry in history if entry[1] > current_time - 300]
+            success_count = recent_history.count("OK")
+            failure_count = recent_history.count("ERROR")
+            
+            error_rate = failure_count / (success_count + failure_count)
+            if error_rate >= CONFIDENCE_THRESHOLD:
+                print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+                break
+            print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
 finally:
     change_color(Color.IDLE)
 
