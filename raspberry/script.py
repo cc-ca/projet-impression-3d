@@ -34,7 +34,7 @@ CONFIDENCE_THRESHOLD = 0.9
 model = load_model('model.h5')
 
 # Initialize history
-history = deque(maxlen=300)  # Assuming a measurement every second for 5 minutes
+history = deque(maxlen=(RUN_DURATION/(SLEEP_INTERVAL)))  # Assuming a measurement every 5 seconds for 1 minute
 
 def change_color(color):
     GPIO.output(pin_red, GPIO.LOW)
@@ -77,10 +77,10 @@ def run():
             current_time = time.localtime()
 
             # Filter history for entries within the last 5 minutes
-            recent_history = [entry[0] for entry in history if entry[1] > current_time - (RUN_DURATION * SLEEP_INTERVAL)]
+            recent_history = [entry[0] for entry in history if entry[1] > current_time - (RUN_DURATION)]
 
             # Check if there are enough elements in history for calculation
-            if len(recent_history) >= 50:  # Assuming a measurement every second for 5 minutes
+            if len(recent_history) >= (RUN_DURATION/(SLEEP_INTERVAL)-1):
                 success_count = recent_history.count("OK")
                 failure_count = recent_history.count("ERROR")
                 
