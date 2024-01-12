@@ -93,7 +93,7 @@ if __name__ == "__main__":
         print("Programme en cours")
         change_color(Color.IDLE)
         while True:
-            if(GPIO.input(pin_button) == GPIO.LOW):
+            if(GPIO.input(pin_button) == GPIO.HIGH):
                 run()
             time.sleep(0.1)
     except KeyboardInterrupt:

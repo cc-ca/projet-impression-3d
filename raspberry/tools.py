@@ -39,9 +39,11 @@ def capture(model):
       cv2.imwrite("photo_capturee.jpg", frame)
       print("Photo capturée avec succès.")
       result = predict_defect_multi_class(model, 'photo_capturee.jpg')
+
       img = Image.open('photo_capturee.jpg')
       output = climage.convert('photo_capturee.jpg')
       print(output)
+
       plt.imshow(img)
       plt.axis('off')  # Masquer les axes
       plt.show()
