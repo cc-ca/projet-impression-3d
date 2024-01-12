@@ -84,8 +84,8 @@ def run():
                 print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
                 break
             print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
-finally:
-    change_color(Color.IDLE)
+    finally:
+        change_color(Color.IDLE)
 
 if __name__ == "__main__":
     try:
