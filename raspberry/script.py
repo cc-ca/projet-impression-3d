@@ -24,12 +24,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(pin_red, GPIO.OUT)
 GPIO.setup(pin_green, GPIO.OUT)
 GPIO.setup(pin_blue, GPIO.OUT)
-GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Constants
 RUN_DURATION = 60
 SLEEP_INTERVAL = 5
-SLEEP_LED = 0.001
+SLEEP_LED = 0.1
 CONFIDENCE_THRESHOLD = 0.9
 model = load_model('model.h5')
 
@@ -65,7 +65,7 @@ def run():
             while time.time() < end_time:
                 color = evaluate_model()
                 change_color(Color.OFF)
-                time.sleep(0.001)
+                time.sleep(SLEEP_LED)
                 change_color(color)
     
                 if color == Color.ERROR:
@@ -91,6 +91,7 @@ if __name__ == "__main__":
         while True:
             if(GPIO.input(pin_button) == GPIO.LOW):
                 run()
+            time.sleep(0.1)
     except KeyboardInterrupt:
         change_color(Color.OFF)
         GPIO.cleanup()
