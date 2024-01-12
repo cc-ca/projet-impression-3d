@@ -1,11 +1,9 @@
 import RPi.GPIO as GPIO
 import time
-import cv2
 from tensorflow.keras.models import load_model
 import tools
 from enum import Enum
 
-# Define an enumeration class
 class Color(Enum):
     OFF = 0
     IDLE = 1
@@ -17,6 +15,7 @@ pin_red = 19
 pin_green = 13
 pin_blue = 26
 pin_button = 6
+pin_switch_off = 5
 
 
 # Initialiser la bibliothèque GPIO
@@ -25,14 +24,19 @@ GPIO.setup(pin_red, GPIO.OUT)
 GPIO.setup(pin_green, GPIO.OUT)
 GPIO.setup(pin_blue, GPIO.OUT)
 GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(pin_switch_off, GPIO.OUT)
 
-# Constants
+# Constantes
 RUN_DURATION = 60
 SLEEP_INTERVAL = 5
 SLEEP_LED = 0.1
 CONFIDENCE_THRESHOLD = 0.9
 model = load_model('model.h5')
 
+def switch_off():
+    GPIO.ouptut(pin_switch_off, GPIO.HIGH)
+    time.sleep(3)
+    GPIO.output(pin_switch_off, GPIO.LOW)
 
 def change_color(color):
     GPIO.output(pin_red, GPIO.LOW)
