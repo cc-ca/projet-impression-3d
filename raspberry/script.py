@@ -4,6 +4,10 @@ from tensorflow.keras.models import load_model
 import tools
 from enum import Enum
 
+# le switch off est connecté à la broche 5 le circuit est femé par defaut (low) lorsque la pin est High le circuit est ouvert
+
+
+
 class Color(Enum):
     OFF = 0
     IDLE = 1
@@ -81,6 +85,7 @@ def run():
                 
             if failure_count/(success_count+failure_count) >= CONFIDENCE_THRESHOLD:
                 print("depassement seuil")
+                switch_off()
                 break
             print("pas depassement seuil")
     finally:
