@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 import time
-import cv2
 from tensorflow.keras.models import load_model
 import tools
 from enum import Enum
@@ -70,23 +69,17 @@ def run():
                 change_color(Color.OFF)
                 time.sleep(SLEEP_LED)
                 change_color(color)
-
                 time.sleep(SLEEP_INTERVAL)
 
-            # Use history to calculate success and failure counts
-            current_time = time.localtime()
-
-            # Filter history for entries within the last 5 minutes
-            recent_history = [entry[0] for entry in history if entry[1] > current_time - (RUN_DURATION)]
-
             # Check if there are enough elements in history for calculation
-            if len(recent_history) >= (RUN_DURATION/(SLEEP_INTERVAL)-1):
-                success_count = recent_history.count("OK")
-                failure_count = recent_history.count("ERROR")
-                
+            if len(history) >= (RUN_DURATION/(SLEEP_INTERVAL)-1):
+                success_count = history.count("OK")
+                failure_count = history.count("ERROR")
                 error_rate = failure_count / (success_count + failure_count)
                 if error_rate >= CONFIDENCE_THRESHOLD:
                     print("Depassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
+                    change_color(Color.ERROR)
+                    time.sleep(5)
                     break
                 print("Pas de dépassement du seuil - Taux d'erreur : {:.2%}".format(error_rate))
             else:
