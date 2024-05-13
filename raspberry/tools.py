@@ -18,7 +18,7 @@ def predict_defect_multi_class(model, image_path):
     #print (model.predict(preprocessed_img))
 
     # Interprétez les prédictions
-    class_labels = [ 'OK','bed_not_stick', 'spaghetti']
+    class_labels = ['0', '1']
     predicted_class = class_labels[np.argmax(predictions)]
 
     return predicted_class

@@ -54,8 +54,8 @@ def evaluate_model():
 
     current_time = time.localtime()
     history.append((result, current_time))
-    
-    if result == "OK":
+
+    if result == "0":
         return Color.CORRECT
     else:
         return Color.ERROR
