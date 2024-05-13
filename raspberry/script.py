@@ -58,7 +58,7 @@ def evaluate_model():
     result = tools.capture(model)
     print(result)
 
-    if result == "OK":
+    if result == "0":
         return Color.CORRECT
     else:
         return Color.ERROR
