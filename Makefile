@@ -1,5 +1,7 @@
-# Install all dependancies in an environment
-setup: /usr/bin/python3 requirements.txt
+SHELL := /bin/bash
+
+# Install all dependancies in a virtual environment
+setup_env: /usr/bin/python3 requirements.txt
 	echo "Installation des dépendances système nécessaires"
 	sudo apt install libhdf5-dev
 
@@ -7,14 +9,33 @@ setup: /usr/bin/python3 requirements.txt
 	/usr/bin/python3 -m venv .venv
 
 	echo "Installation des dépendances python nécessaires"
-	source .venv/bin/activate \
-	/usr/bin/python3 -m pip install --upgrade pip \
-	/usr/bin/python3 -m pip install -r requirements.txt
+	source .venv/bin/activate &&\
+	python -m pip install --upgrade pip &&\
+	python -m pip install -r requirements.txt
 
-	echo "Setup script launch on start up \n if you get an error, please run crontab -e and exit then run make setup again"
-	(crontab -l && echo "@reboot source $PWD/.venv/bin/activate && python $PWD/script.py") | crontab -
 
-# Start capture
-run: /usr/bin/python3 script.py
-	source .venv/bin/activate \
-	python $PWD/script.py
+# Enable auto start of the script on boot
+# This will add a cron job to the user's crontab
+# Need to setup the environment first
+setup_autolaunch: .venv/bin/activate script.py
+	echo "Setup script launch on start up"
+	(\
+		crontab -l 2>/dev/null; # Force crontab to be created if it doesn't exist \
+		echo "@reboot source $(PWD)/.venv/bin/activate && python $(PWD)/script.py"\
+	) | crontab - # Add the cron job to the user's crontab
+
+
+# Install all dependancies in an environment
+setup: setup_env setup_autolaunch
+
+
+# Start capture manually
+# Need to setup the environment first by running 'make setup' or as a minimum 'make setup_env'
+run: .venv/bin/activate script.py
+	source .venv/bin/activate &&\
+	python script.py
+
+
+setup_and_run: setup run
+
+all: setup_and_run
