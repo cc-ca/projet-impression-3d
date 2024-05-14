@@ -15,6 +15,6 @@ setup: /usr/bin/python3 requirements.txt
 	(crontab -l && echo "@reboot source $PWD/.venv/bin/activate && python $PWD/script.py") | crontab -
 
 # Start capture
-run: /usr/bin/python3 raspberry/script.py
+run: /usr/bin/python3 script.py
 	source .venv/bin/activate \
 	python $PWD/script.py
