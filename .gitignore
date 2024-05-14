@@ -1,5 +1,8 @@
+# Fichiers d’exécution utilisé par python
+__pycache__/
 .venv/
 
+# Fichier de travail pour l’entrainement et les tests de modèles
 dataset*/
 spaghetti en trop/
 ok cut/
@@ -8,8 +11,7 @@ models/
 *.h5
 *.keras
 
-__pycache__/
-test*/
-photo_capturee.jpg
-
 brouillon.txt
+
+# Fichier de travail pour les prédictions
+photo_capturee.jpg

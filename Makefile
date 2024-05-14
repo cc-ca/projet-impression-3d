@@ -1,3 +1,8 @@
+#
+# Ce Makefile est destiné à une utilisation sur un système à base Debian comme Raspbian,
+# il est possible qu'il ne fonctionne pas sur d'autres systèmes et qu'il nécessite des modifications.
+#
+
 SHELL := /bin/bash
 
 # Install all dependancies in a virtual environment
