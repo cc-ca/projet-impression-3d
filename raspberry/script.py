@@ -27,6 +27,8 @@ GPIO.setup(pin_red, GPIO.OUT)
 GPIO.setup(pin_green, GPIO.OUT)
 GPIO.setup(pin_blue, GPIO.OUT)
 GPIO.setup(pin_button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(pin_relais, GPIO.OUT)
+GPIO.output(pin_relais, GPIO.HIGH)
 
 # Constants
 RUN_DURATION = 60
@@ -82,6 +84,8 @@ def run():
                         print("Threshold exceeded - Error rate: {:.2%}".format(error_rate))
                         change_color(Color.ERROR)
                         time.sleep(SLEEP_INTERVAL)
+                        GPIO.output(pin_relais, GPIO.LOW)
+                        time.sleep(5000)
                         break
                     print("No threshold exceeded - Error rate: {:.2%}".format(error_rate))
                 else:
