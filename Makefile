@@ -8,12 +8,13 @@ SHELL := /bin/bash
 # Install all dependancies in a virtual environment
 setup_env: /usr/bin/python3 requirements.txt
 	echo "Installation des dépendances système nécessaires"
-	sudo apt install libhdf5-dev
+	sudo apt update && sudo apt upgrade
+	sudo apt install python3-dev libhdf5-dev
 
 	echo "Création de l'environnement virtuel"
 	/usr/bin/python3 -m venv .venv
 
-	echo "Installation des dépendances python nécessaires"
+	echo "Installation des dépendances python nécessaires (peux être long)"
 	source .venv/bin/activate &&\
 	python -m pip install --upgrade pip &&\
 	python -m pip install -r requirements.txt
