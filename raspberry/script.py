@@ -113,12 +113,15 @@ def button_listener():
             time.sleep(0.1)  # Debounce delay
             if not is_running:
                 if model_thread is not None and model_thread.is_alive():
+                    print("Pausing model thread...")
                     is_running = False
                 else:
+                    print("Starting model thread...")
                     is_running = True
                     model_thread = threading.Thread(target=run)
                     model_thread.start()
             else:
+                print("Pausing model thread...")
                 is_running = False
             time.sleep(0.5)  # Delay to handle multiple button presses
         else:
