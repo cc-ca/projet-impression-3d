@@ -7,14 +7,13 @@ from enum import Enum
 from collections import deque
 import threading
 
-# Define an enumeration class
 class Color(Enum):
     OFF = 0
     IDLE = 1
     ERROR = 2
     CORRECT = 3
 
-# Define GPIO pins for each LED color and the button
+# GPIO pin numbers
 pin_red = 19
 pin_green = 13
 pin_blue = 26
@@ -35,7 +34,7 @@ RUN_DURATION = 60
 SLEEP_INTERVAL = 5
 SLEEP_LED = 0.1
 CONFIDENCE_THRESHOLD = 0.9
-model = load_model('model.h5')
+MODEL = load_model('model.h5')
 
 # Global variables
 history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
@@ -58,7 +57,7 @@ def change_color(color):
 
 def evaluate_model():
     global history
-    result = tools.capture(model)
+    result = tools.capture(MODEL)
     print(result)
     history.append(result)
 
@@ -86,11 +85,7 @@ def run():
                     error_rate = failure_count / (success_count + failure_count)
                     if error_rate >= CONFIDENCE_THRESHOLD:
                         print("Threshold exceeded - Error rate: {:.2%}".format(error_rate))
-                        change_color(Color.ERROR)
-                        time.sleep(SLEEP_INTERVAL)
-                        GPIO.output(pin_relais, GPIO.LOW)
-                        time.sleep(5000)
-                        break
+                        stop()
                     print("No threshold exceeded - Error rate: {:.2%}".format(error_rate))
                 else:
                     print("Not enough elements in history for calculation.")
@@ -100,6 +95,23 @@ def run():
                 
     finally:
         change_color(Color.IDLE)
+
+def stop():
+    change_color(Color.ERROR)
+    time.sleep(SLEEP_INTERVAL)
+    GPIO.output(pin_relais, GPIO.LOW)
+    time.sleep(5000)
+    restart()
+    
+def restart():
+    print("Restarting script...")
+    change_color(Color.OFF)
+    time.sleep(1)
+    # Cleanup GPIO
+    GPIO.cleanup()
+    # Restart the script
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
 
 def button_listener():
     global is_running
@@ -111,12 +123,7 @@ def button_listener():
                 button_press_start_time = time.time()
             else:
                 if time.time() - button_press_start_time >= 3:
-                    print("Restarting script...")
-                    # Cleanup GPIO
-                    GPIO.cleanup()
-                    # Restart the script
-                    python = sys.executable
-                    os.execl(python, python, *sys.argv)
+                    restart()
             time.sleep(0.1)  # Debounce delay
             if not is_running:
                 if model_thread is not None and model_thread.is_alive():
