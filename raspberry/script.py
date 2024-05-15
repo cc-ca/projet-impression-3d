@@ -40,8 +40,11 @@ model = load_model('model.h5')
 # Global variables
 history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
 is_running = False
+current_color = Color.IDLE
 
 def change_color(color):
+    global current_color
+    current_color = color
     GPIO.output(pin_red, GPIO.LOW)
     GPIO.output(pin_green, GPIO.LOW)
     GPIO.output(pin_blue, GPIO.LOW)
@@ -67,6 +70,7 @@ def evaluate_model():
 def run():
     global is_running
     global history
+    global current_color
     try:
         while True:
             while is_running:
@@ -91,6 +95,9 @@ def run():
                 else:
                     print("Not enough elements in history for calculation.")
                 time.sleep(SLEEP_INTERVAL)
+            if not is_running and current_color != Color.IDLE:
+                change_color(Color.IDLE)
+                
     finally:
         change_color(Color.IDLE)
 
