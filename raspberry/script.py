@@ -6,12 +6,35 @@ import tools
 from enum import Enum
 from collections import deque
 import threading
+from flask import Flask, jsonify
+import threading
 
 class Color(Enum):
     OFF = 0
     IDLE = 1
     ERROR = 2
     CORRECT = 3
+
+class API(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.app = Flask(__name__)
+        self.is_running = False
+        self.current_color = Color.IDLE
+        self.error_rate = 0.0
+
+        @self.app.route('/status', methods=['GET'])
+        def get_status():
+            status = {
+                'is_running': self.is_running,
+                'current_color': self.current_color.name,
+                'error_rate': self.error_rate
+            }
+            return jsonify(status)
+
+    def run(self):
+        global is_running, current_color, error_rate
+        self.app.run()
 
 # GPIO pin numbers
 pin_red = 19
@@ -40,6 +63,7 @@ MODEL = load_model('model.h5')
 history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
 is_running = False
 current_color = Color.IDLE
+error_rate = 0.0
 
 def change_color(color):
     global current_color
@@ -70,6 +94,7 @@ def run():
     global is_running
     global history
     global current_color
+    global error_rate
     try:
         while True:
             while is_running:
@@ -148,6 +173,8 @@ if __name__ == "__main__":
         change_color(Color.IDLE)
         # Start button listener in a separate thread
         threading.Thread(target=button_listener).start()
+        api = API()
+        api.start()
         while True:
             time.sleep(1)  # Keep the main thread running
     except KeyboardInterrupt:
