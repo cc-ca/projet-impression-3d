@@ -44,7 +44,7 @@ is_running = False
 
 def change_color(state):
     global current_state
-    if state != State.STOP:
+    if current_state != State.STOP:
         current_state = state
     GPIO.output(pin_red, GPIO.LOW)
     GPIO.output(pin_green, GPIO.LOW)
@@ -127,6 +127,11 @@ def button_listener():
     model_thread = None
     while True:
         if GPIO.input(pin_button) == GPIO.HIGH:
+            if button_press_start_time is None:
+                button_press_start_time = time.time()
+            else:
+                if time.time() - button_press_start_time >= 3:
+                    restart()
             time.sleep(0.1)  # Debounce delay
             if not is_running and model_thread is None and current_state != State.STOP:
                 print("Starting model thread...")
@@ -134,11 +139,14 @@ def button_listener():
                 model_thread = threading.Thread(target=run)
                 model_thread.start()
             elif not is_running and model_thread is not None and current_state != State.STOP:
-                print("Restarting model thread...")
+                print("Unpausing model thread...")
                 is_running = True
             elif is_running and model_thread is not None and current_state != State.STOP:
                 print("Pausing model thread...")
                 is_running = False
+            time.sleep(0.5)
+        else:
+            button_press_start_time = None
 
 
 if __name__ == "__main__":
