@@ -80,8 +80,8 @@ def run():
 
                 # Check if there are enough elements in history for calculation
                 if len(history) >= (RUN_DURATION // SLEEP_INTERVAL - 1):
-                    success_count = history.count("OK")
-                    failure_count = history.count("ERROR")
+                    success_count = history.count("1")
+                    failure_count = history.count("0")
                     error_rate = failure_count / (success_count + failure_count)
                     if error_rate >= CONFIDENCE_THRESHOLD:
                         print("Threshold exceeded - Error rate: {:.2%}".format(error_rate))
@@ -118,7 +118,7 @@ def button_listener():
     model_thread = None
     button_press_start_time = None
     while True:
-        if GPIO.input(pin_button) == GPIO.LOW:
+        if GPIO.input(pin_button) == GPIO.HIGH:
             if button_press_start_time is None:
                 button_press_start_time = time.time()
             else:
