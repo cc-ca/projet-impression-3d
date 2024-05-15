@@ -108,8 +108,6 @@ def stop():
         time.sleep(0.5)
         change_color(State.ERROR)
         time.sleep(1)
-        if GPIO.input(pin_button) == GPIO.HIGH:
-            restart()
     
 def restart():
     print("Restarting script...")
@@ -144,6 +142,8 @@ def button_listener():
             elif is_running and model_thread is not None and current_state != State.STOP:
                 print("Pausing model thread...")
                 is_running = False
+            elif current_state == State.STOP:
+                restart()
             time.sleep(0.5)
         else:
             button_press_start_time = None
