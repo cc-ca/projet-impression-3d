@@ -21,7 +21,7 @@ class API(threading.Thread):
         threading.Thread.__init__(self)
         self.app = Flask(__name__)
         self.is_running = False
-        self.current_color = Color.IDLE
+        self.current_color = State.IDLE
         self.error_rate = 0.0
 
         @self.app.route('/status', methods=['GET'])
@@ -34,7 +34,7 @@ class API(threading.Thread):
             return jsonify(status)
 
     def run(self):
-        global is_running, current_color, error_rate
+        global is_running, current_state, error_rate
         self.app.run()
 
 # GPIO pin numbers
@@ -94,7 +94,7 @@ def evaluate_model():
 
 def run():
     global history
-    global current_color
+    global current_state
     global error_rate
     try:
         while True:
