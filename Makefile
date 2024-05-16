@@ -5,16 +5,33 @@
 
 SHELL := /bin/bash
 
+define SYSTEMD_SERVICE
+[Unit]
+Description=Run 3D printer Error Detection python script on boot
+After=default.target
+
+[Service]
+Type=exec
+WorkingDirectory=$(PWD)
+ExecStart=/usr/bin/bash -c "source .venv/bin/activate && python script.py"
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+endef
+export SYSTEMD_SERVICE
+
+
 # Install all dependancies in a virtual environment
 setup_env: /usr/bin/python3 requirements.txt
-	echo "Installation des dépendances système nécessaires"
+	@echo "Installation des dépendances système nécessaires"
 	sudo apt update && sudo apt upgrade
 	sudo apt install python3-dev libhdf5-dev
 
-	echo "Création de l'environnement virtuel"
+	@echo "Création de l'environnement virtuel"
 	/usr/bin/python3 -m venv .venv
 
-	echo "Installation des dépendances python nécessaires (peux être long)"
+	@echo "Installation des dépendances python nécessaires (peux être long)"
 	source .venv/bin/activate &&\
 	python -m pip install --upgrade pip &&\
 	python -m pip install -r requirements.txt
@@ -24,11 +41,12 @@ setup_env: /usr/bin/python3 requirements.txt
 # This will add a cron job to the user's crontab
 # Need to setup the environment first
 setup_autolaunch: .venv/bin/activate script.py
-	echo "Setup script launch on start up"
-	(\
-		crontab -l 2>/dev/null; # Force crontab to be created if it doesn't exist \
-		echo "@reboot source $(PWD)/.venv/bin/activate && python $(PWD)/script.py"\
-	) | crontab - # Add the cron job to the user's crontab
+	@echo "Setup script launch on start up"
+	mkdir -p ~/.config/systemd/user
+	@echo "$$SYSTEMD_SERVICE" | tee ~/.config/systemd/user/3dprinter_error_detector.service
+	@echo "Reload services and start it on boot"
+	systemctl --user daemon-reload
+	systemctl --user enable 3dprinter_error_detector.service
 
 
 # Install all dependancies in an environment
