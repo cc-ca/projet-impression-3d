@@ -72,7 +72,7 @@ def run():
     global history
     global current_state
     try:
-        time.sleep(300)
+        time.sleep(300) # Let the 3d printer start up
         while True:
             while is_running:
                 color = evaluate_model()
