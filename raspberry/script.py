@@ -19,7 +19,7 @@ pin_red = 19
 pin_green = 13
 pin_blue = 26
 pin_button = 6
-pin_relais = 5
+pin_relais = 4
 
 # Initialize GPIO library
 GPIO.setmode(GPIO.BCM)
@@ -72,6 +72,7 @@ def run():
     global history
     global current_state
     try:
+        time.sleep(300)
         while True:
             while is_running:
                 color = evaluate_model()
