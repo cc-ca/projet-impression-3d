@@ -16,27 +16,31 @@ class State(Enum):
     CORRECT = 3
     STOP = 4 
     ISSUE = 5
+    WARMUP = 6
 
 class API(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.app = Flask(__name__)
-        self.is_running = False
-        self.current_color = State.IDLE
-        self.error_rate = 0.0
 
         @self.app.route('/status', methods=['GET'])
         def get_status():
+            global is_running, current_state, error_rate
+            state_dict = {state.name: (current_state == state) for state in State}
             status = {
-                'is_running': self.is_running,
-                'current_color': self.current_color.name,
-                'error_rate': self.error_rate
+                'is_running': is_running,
+                'states': state_dict,
+                'error_rate': error_rate
             }
             return jsonify(status)
+        
+        @self.app.route('/stop', methods=['POST'])
+        def stop_printer():
+            stop()
+            return jsonify({'message': 'Printer stopped'}), 200
 
     def run(self):
-        global is_running, current_state, error_rate
-        self.app.run()
+        self.app.run(host='0.0.0.0')
 
 # GPIO pin numbers
 pin_red = 19
@@ -56,9 +60,11 @@ GPIO.output(pin_relais, GPIO.HIGH)
 
 # Constants
 RUN_DURATION = 60
+PRINT_WARM_UP = 300
 SLEEP_INTERVAL = 5
 SLEEP_LED = 0.1
 CONFIDENCE_THRESHOLD = 0.9
+RESTART_INTERVAL = 3
 MODEL = load_model('model.h5')
 
 # Global variables
@@ -77,7 +83,7 @@ def change_color(state):
 
     if state == State.ERROR:
         GPIO.output(pin_red, GPIO.HIGH)
-    elif state == State.CORRECT:
+    elif state == State.CORRECT or state == State.WARMUP:
         GPIO.output(pin_green, GPIO.HIGH)
     elif state == State.IDLE:
         GPIO.output(pin_blue, GPIO.HIGH)
@@ -95,7 +101,7 @@ def evaluate_model():
             return State.CORRECT
         else:
             return State.ERROR
-    except Exception as e:
+    except Exception:
         while True:
             change_color(State.OFF)
             time.sleep(0.5)
@@ -107,8 +113,8 @@ def run():
     global current_state
     global error_rate
     try:
-        change_color(State.CORRECT)
-        time.sleep(300) # Let the 3d printer start up
+        change_color(State.WARMUP)
+        time.sleep(PRINT_WARM_UP)
         while True:
             while is_running:
                 color = evaluate_model()
@@ -165,7 +171,7 @@ def button_listener():
             if button_press_start_time is None:
                 button_press_start_time = time.time()
             else:
-                if time.time() - button_press_start_time >= 3:
+                if time.time() - button_press_start_time >= RESTART_INTERVAL:
                     restart()
             time.sleep(0.1)  # Debounce delay
             if not is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
