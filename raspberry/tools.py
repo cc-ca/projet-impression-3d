@@ -22,25 +22,19 @@ def predict_defect_multi_class(model, image_path):
 
 
 def capture(model):
-  cap = cv2.VideoCapture(0) # Ouvrir la webcam (la webcam par défaut a l'ID 0)
-  # Vérifier si la webcam est ouverte correctement
-  if not cap.isOpened():
-      print("Erreur: Impossible d'ouvrir la webcam.")
-      exit()
-  # Capturer une image
-  ret, frame = cap.read()
-
-  if ret:
-      cv2.imwrite("photo_capturee.jpg", frame)
-      print("Photo capturée avec succès.")
-      img = Image.open('photo_capturee.jpg')
-      plt.imshow(img)
-      plt.axis('off')  # Masquer les axes
-      plt.show()
-      result = predict_defect_multi_class(model, 'photo_capturee.jpg')
-      cap.release()
-      return(result)
-  else:
-      print("Erreur lors de la capture de la photo.")
-      cap.release()
-      return('error')
+    try:
+        cap = cv2.VideoCapture(0) # Ouvrir la webcam (la webcam par défaut a l'ID 0)
+        # Capturer une image
+        ret, frame = cap.read()
+        cv2.imwrite("photo_capturee.jpg", frame)
+        print("Photo capturée avec succès.")
+        img = Image.open('photo_capturee.jpg')
+        plt.imshow(img)
+        plt.axis('off')  # Masquer les axes
+        plt.show()
+        result = predict_defect_multi_class(model, 'photo_capturee.jpg')
+        cap.release()
+        return(result)
+    except:
+        cap.release()
+        raise Exception("Erreur: Impossible d'ouvrir la webcam.")
