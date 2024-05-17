@@ -43,10 +43,10 @@ setup_env: /usr/bin/python3 requirements.txt
 setup_autolaunch: .venv/bin/activate script.py
 	@echo "Setup script launch on start up"
 	mkdir -p ~/.config/systemd/user
-	@echo "$$SYSTEMD_SERVICE" | tee ~/.config/systemd/user/3dprinter_error_detector.service
+	@echo "$$SYSTEMD_SERVICE" | sudo tee /etc/systemd/system/3dprinter_error_detector.service
 	@echo "Reload services and start it on boot"
-	systemctl --user daemon-reload
-	systemctl --user enable 3dprinter_error_detector.service
+	sudo systemctl daemon-reload
+	sudo systemctl enable 3dprinter_error_detector.service
 
 
 # Install all dependancies in an environment
