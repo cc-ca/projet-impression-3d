@@ -11,9 +11,9 @@ import cv2
 import random
 import time
 import datetime
-#model.save('models/88-83.h5')
+#model.save('../88-83.h5')
 
-model = load_model('model.h5')
+model = load_model('../model.h5')
 
 
 def load_and_preprocess_image(image_path):
