@@ -15,6 +15,7 @@ class State(Enum):
     ERROR = 2
     CORRECT = 3
     STOP = 4 
+    ISSUE = 5
 
 class API(threading.Thread):
     def __init__(self):
@@ -42,7 +43,7 @@ pin_red = 19
 pin_green = 13
 pin_blue = 26
 pin_button = 6
-pin_relais = 5
+pin_relais = 4
 
 # Initialize GPIO library
 GPIO.setmode(GPIO.BCM)
@@ -68,7 +69,7 @@ error_rate = 0.0
 
 def change_color(state):
     global current_state
-    if current_state != State.STOP:
+    if current_state != State.STOP and current_state != State.ISSUE:
         current_state = state
     GPIO.output(pin_red, GPIO.LOW)
     GPIO.output(pin_green, GPIO.LOW)
@@ -80,23 +81,34 @@ def change_color(state):
         GPIO.output(pin_green, GPIO.HIGH)
     elif state == State.IDLE:
         GPIO.output(pin_blue, GPIO.HIGH)
+    elif state == State.ISSUE:
+        GPIO.output(pin_red, GPIO.HIGH)
+        GPIO.output(pin_green, GPIO.HIGH)
 
 def evaluate_model():
     global history
-    result = tools.capture(MODEL)
-    print(result)
-    history.append(result)
-
-    if result == "0":
-        return State.CORRECT
-    else:
-        return State.ERROR
+    try:
+        result = tools.capture(MODEL)
+        print(result)
+        history.append(result)
+        if result == "0":
+            return State.CORRECT
+        else:
+            return State.ERROR
+    except Exception as e:
+        while True:
+            change_color(State.OFF)
+            time.sleep(0.5)
+            change_color(State.ISSUE)
+            time.sleep(1)
 
 def run():
     global history
     global current_state
     global error_rate
     try:
+        change_color(State.CORRECT)
+        time.sleep(300) # Let the 3d printer start up
         while True:
             while is_running:
                 color = evaluate_model()
@@ -156,18 +168,18 @@ def button_listener():
                 if time.time() - button_press_start_time >= 3:
                     restart()
             time.sleep(0.1)  # Debounce delay
-            if not is_running and model_thread is None and current_state != State.STOP:
+            if not is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
                 print("Starting model thread...")
                 is_running = True
                 model_thread = threading.Thread(target=run)
                 model_thread.start()
-            elif not is_running and model_thread is not None and current_state != State.STOP:
+            elif not is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
                 print("Unpausing model thread...")
                 is_running = True
-            elif is_running and model_thread is not None and current_state != State.STOP:
+            elif is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
                 print("Pausing model thread...")
                 is_running = False
-            elif current_state == State.STOP:
+            elif current_state == State.STOP or current_state == State.ISSUE:
                 restart()
             time.sleep(0.5)
         else:
