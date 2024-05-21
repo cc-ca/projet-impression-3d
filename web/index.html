@@ -15,14 +15,14 @@
     <main>
       <section>
         <h1 class="title">
-          <div class="statusCircle"></div>
+          <div id="status-circle" class="statusCircle"></div>
           Print&nbsp<strong>Watch</strong>
         </h1>
 
         <div class="printerStatus">
           <div class="printerStatusItem">
             <span>Current status: </span>
-            <span id="currentStatus" class="font-green">Valid</span>
+            <span id="status-name" class="statusName">Starting...</span>
           </div>
         </div>
 
@@ -87,7 +87,11 @@
         </div>
       </section>
       <aside>
-        <img src="printer.svg" alt="Imprimante Cam Preview" />
+        <img
+          id="printer-image"
+          src="../photo_capturee.jpg"
+          alt="Imprimante Cam Preview"
+        />
       </aside>
     </main>
 
