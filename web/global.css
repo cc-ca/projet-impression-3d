@@ -38,6 +38,7 @@ input {
   --green: hsl(156, 100%, 39%);
   --orange: hsl(26, 100%, 59%);
   --red: hsl(5, 58%, 51%);
+  --gray: hsl(0, 0%, 56%);
   --primary: var(--green);
   --onHoverPrimary: hsl(156, 100%, 55%);
   --error: var(--red);
@@ -81,7 +82,7 @@ h1.title {
 }
 
 div.statusCircle {
-  --circleColor: var(--primary);
+  --circleColor: var(--gray);
   position: relative;
   width: 0.75rem;
   height: 0.75rem;
@@ -138,6 +139,10 @@ section {
 .printerStatus {
   display: flex;
   justify-content: center;
+}
+
+.statusName {
+  color: var(--gray);
 }
 
 .circularDiagramWrapper {
