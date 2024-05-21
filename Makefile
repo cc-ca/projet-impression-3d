@@ -12,7 +12,7 @@ After=default.target
 
 [Service]
 Type=exec
-WorkingDirectory=$(PWD)
+WorkingDirectory=$(PWD)/3dprinter_error_detector
 ExecStart=/usr/bin/bash -c "source .venv/bin/activate && python script.py"
 Restart=on-failure
 
@@ -55,8 +55,9 @@ setup: setup_env setup_autolaunch
 
 # Start capture manually
 # Need to setup the environment first by running 'make setup' or as a minimum 'make setup_env'
-run: .venv/bin/activate script.py
+run: .venv/bin/activate 3dprinter_error_detector/script.py
 	source .venv/bin/activate &&\
+	cd 3dprinter_error_detector &&\
 	python script.py
 
 
