@@ -1,11 +1,11 @@
 import RPi.GPIO as GPIO
-import os, sys
 import time
 from tensorflow.keras.models import load_model
 import tools
 from enum import Enum
 from collections import deque
 import threading
+from flask import Flask, jsonify
 
 class State(Enum):
     OFF = 0
@@ -14,6 +14,31 @@ class State(Enum):
     CORRECT = 3
     STOP = 4 
     ISSUE = 5
+    WARMUP = 6
+
+class API(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.app = Flask(__name__)
+
+        @self.app.route('/status', methods=['GET'])
+        def get_status():
+            global capture_is_running, current_state, error_rate
+            state_dict = {state.name: (current_state == state) for state in State}
+            status = {
+                'is_running': capture_is_running,
+                'states': state_dict,
+                'error_rate': error_rate
+            }
+            return jsonify(status)
+        
+        @self.app.route('/stop', methods=['POST'])
+        def stop_printer():
+            stop()
+            return jsonify({'message': 'Printer stopped'}), 200
+
+    def run(self):
+        self.app.run(host='0.0.0.0')
 
 # GPIO pin numbers
 pin_red = 19
@@ -33,15 +58,20 @@ GPIO.output(pin_relais, GPIO.HIGH)
 
 # Constants
 RUN_DURATION = 60
+PRINT_WARM_UP = 300
 SLEEP_INTERVAL = 5
 SLEEP_LED = 0.1
 CONFIDENCE_THRESHOLD = 0.9
+RESTART_INTERVAL = 3
 MODEL = load_model('model.h5')
 
 # Global variables
 history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
 current_state = State.IDLE
-is_running = False
+capture_is_running = False
+error_rate = 0.0
+model_thread = None
+model_thread_running = True
 
 def change_color(state):
     global current_state
@@ -53,7 +83,7 @@ def change_color(state):
 
     if state == State.ERROR:
         GPIO.output(pin_red, GPIO.HIGH)
-    elif state == State.CORRECT:
+    elif state == State.CORRECT or state == State.WARMUP:
         GPIO.output(pin_green, GPIO.HIGH)
     elif state == State.IDLE:
         GPIO.output(pin_blue, GPIO.HIGH)
@@ -71,7 +101,7 @@ def evaluate_model():
             return State.CORRECT
         else:
             return State.ERROR
-    except Exception as e:
+    except Exception:
         while True:
             change_color(State.OFF)
             time.sleep(0.5)
@@ -79,13 +109,11 @@ def evaluate_model():
             time.sleep(1)
 
 def run():
-    global history
-    global current_state
+    global history, current_state, error_rate, model_thread_running, capture_is_running
     try:
-        change_color(State.CORRECT)
-        time.sleep(300) # Let the 3d printer start up
-        while True:
-            while is_running:
+        change_color(State.WARMUP)
+        while model_thread_running:
+            if capture_is_running:
                 color = evaluate_model()
                 change_color(State.OFF)
                 time.sleep(SLEEP_LED)
@@ -103,15 +131,16 @@ def run():
                 else:
                     print("Not enough elements in history for calculation.")
                 time.sleep(SLEEP_INTERVAL)
-            if not is_running and current_state != State.IDLE:
+            if not capture_is_running and current_state != State.IDLE:
                 change_color(State.IDLE)
-                
     finally:
         change_color(State.IDLE)
 
 def stop():
-    global current_state
+    global current_state, model_thread_running, capture_is_running
     current_state = State.STOP
+    model_thread_running = False
+    capture_is_running = False
     change_color(State.ERROR)
     time.sleep(SLEEP_INTERVAL)
     GPIO.output(pin_relais, GPIO.LOW)
@@ -122,38 +151,41 @@ def stop():
         time.sleep(1)
     
 def restart():
+    global model_thread, capture_is_running, model_thread, model_thread_running, current_state
     print("Restarting script...")
     change_color(State.OFF)
-    time.sleep(1)
-    # Cleanup GPIO
-    GPIO.cleanup()
-    # Restart the script
-    python = sys.executable
-    os.execl(python, python, *sys.argv)
+    capture_is_running = False
+    # Stop the model thread
+    if model_thread and model_thread.is_alive():
+        model_thread_running = False
+        model_thread.join()
+    model_thread = None
+    change_color(State.IDLE)
+    current_state = State.IDLE
 
 def button_listener():
-    global is_running
-    global current_state
-    model_thread = None
+    global capture_is_running, current_state, model_thread
+    button_press_start_time = None
     while True:
         if GPIO.input(pin_button) == GPIO.HIGH:
             if button_press_start_time is None:
                 button_press_start_time = time.time()
             else:
-                if time.time() - button_press_start_time >= 3:
+                if time.time() - button_press_start_time >= RESTART_INTERVAL:
                     restart()
+                    continue
             time.sleep(0.1)  # Debounce delay
-            if not is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
+            if not capture_is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
                 print("Starting model thread...")
-                is_running = True
+                capture_is_running = True
                 model_thread = threading.Thread(target=run)
                 model_thread.start()
-            elif not is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
+            elif not capture_is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
                 print("Unpausing model thread...")
-                is_running = True
-            elif is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
+                capture_is_running = True
+            elif capture_is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
                 print("Pausing model thread...")
-                is_running = False
+                capture_is_running = False
             elif current_state == State.STOP or current_state == State.ISSUE:
                 restart()
             time.sleep(0.5)
@@ -167,6 +199,8 @@ if __name__ == "__main__":
         change_color(State.IDLE)
         # Start button listener in a separate thread
         threading.Thread(target=button_listener).start()
+        api = API()
+        api.start()
         while True:
             time.sleep(1)  # Keep the main thread running
     except KeyboardInterrupt:
