@@ -4,8 +4,8 @@ const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
 
-const API_URL = "http://TODEFINE:3000/";
-const IMAGE_URL = "http://TODEFINE:3000/text.fr";
+const API_URL = "http://localhost:5000/";
+const IMAGE_URL = "../photo_capturee.jpg";
 
 const MapStatusAndColor = {
   OFF: "gray",
@@ -27,30 +27,39 @@ reloadButton.addEventListener("click", async () => {
 });
 
 const stopPrinting = async () => {
-  await fetch(API_URL, {
-    method: "POST",
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      return;
-    });
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return;
+      });
+  } catch (error) {
+    console.log("Error stopping printing: ", error);
+  }
 };
 
 const fetchData = async () => {
-  await fetch(API_URL)
-    .then((response) => response.json())
-    .then((data) => {
-      const status = Object.keys(data.states).find(
-        (key) => data.states[key] === true
-      );
-      statusCircle.style.setProperty(
-        "--circleColor",
-        `var(--${MapStatusAndColor[status]})`
-      );
-      statusName.textContent =
-        status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-      statusName.style.color = `var(--${MapStatusAndColor[status]})`;
-    });
+  try {
+    console.log("Fetching data...");
+    await fetch(API_URL)
+      .then((response) => response.json())
+      .then((data) => {
+        const status = Object.keys(data.states).find(
+          (key) => data.states[key] === true
+        );
+        statusCircle.style.setProperty(
+          "--circleColor",
+          `var(--${MapStatusAndColor[status]})`
+        );
+        statusName.textContent =
+          status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+        statusName.style.color = `var(--${MapStatusAndColor[status]})`;
+      });
+  } catch (error) {
+    console.log("Error fetching data: ", error);
+  }
 
   updateImage();
 };
@@ -63,8 +72,12 @@ const reFetchData = async () => {
 };
 
 function updateImage() {
-  let timestamp = new Date().getTime();
-  printerImage.src = `${IMAGE_URL}?${timestamp}`;
+  try {
+    let timestamp = new Date().getTime();
+    printerImage.src = `${IMAGE_URL}?${timestamp}`;
+  } catch (error) {
+    console.log("Error updating image: ", error);
+  }
 }
 
 reFetchData();
