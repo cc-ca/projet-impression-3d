@@ -112,7 +112,6 @@ def run():
     global history, current_state, error_rate, model_thread_running, capture_is_running
     try:
         change_color(State.WARMUP)
-        time.sleep(PRINT_WARM_UP)
         while model_thread_running:
             if capture_is_running:
                 color = evaluate_model()
@@ -152,19 +151,17 @@ def stop():
         time.sleep(1)
     
 def restart():
-    global model_thread, capture_is_running, MODEL
+    global model_thread, capture_is_running, model_thread, model_thread_running, current_state
     print("Restarting script...")
     change_color(State.OFF)
     capture_is_running = False
     # Stop the model thread
     if model_thread and model_thread.is_alive():
-        global model_thread_running
         model_thread_running = False
         model_thread.join()
-    time.sleep(RESTART_INTERVAL)
-    # Set model to None
-    MODEL = None
+    model_thread = None
     change_color(State.IDLE)
+    current_state = State.IDLE
 
 def button_listener():
     global capture_is_running, current_state, model_thread
@@ -176,6 +173,7 @@ def button_listener():
             else:
                 if time.time() - button_press_start_time >= RESTART_INTERVAL:
                     restart()
+                    continue
             time.sleep(0.1)  # Debounce delay
             if not capture_is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
                 print("Starting model thread...")
