@@ -66,12 +66,9 @@ const fetchData = async () => {
   updateImage();
 };
 
-const reFetchData = async () => {
-  await fetchData();
-  setInterval(() => {
-    reFetchData();
-  }, FETCH_INTERVAL);
-};
+// const reFetchData = async () => {
+//   await fetchData();
+// };
 
 function updateImage() {
   try {
@@ -82,4 +79,7 @@ function updateImage() {
   }
 }
 
-reFetchData();
+setInterval(async () => {
+  await fetchData();
+}, FETCH_INTERVAL);
+fetchData();
