@@ -7,6 +7,8 @@ const printerImage = document.getElementById("printer-image");
 const API_URL = "http://localhost:5000/";
 const IMAGE_URL = "../photo_capturee.jpg";
 
+const FETCH_INTERVAL = 15000; // 15 seconds
+
 const MapStatusAndColor = {
   OFF: "gray",
   IDLE: "blue",
@@ -68,7 +70,7 @@ const reFetchData = async () => {
   await fetchData();
   setInterval(() => {
     reFetchData();
-  }, 5000);
+  }, FETCH_INTERVAL);
 };
 
 function updateImage() {
