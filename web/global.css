@@ -130,6 +130,16 @@ main > * {
   gap: calc(var(--default-padding) * 2);
 }
 
+section {
+  width: max-content;
+  margin: auto;
+}
+
+.printerStatus {
+  display: flex;
+  justify-content: center;
+}
+
 .circularDiagramWrapper {
   display: flex;
   flex-direction: column;
@@ -240,6 +250,18 @@ img {
 
 .bg-red {
   background-color: var(--red);
+}
+
+.font-green {
+  color: var(--green);
+}
+
+.font-orange {
+  color: var(--orange);
+}
+
+.font-red {
+  color: var(--red);
 }
 
 /* SPINNER STYLE */
