@@ -4,7 +4,7 @@ const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
 
-const API_URL = "http://localhost:5000/";
+const API_URL = `${window.location.href}:5000/`;
 const IMAGE_URL = "../photo_capturee.jpg";
 
 const FETCH_INTERVAL = 15000; // 15 seconds
@@ -65,10 +65,6 @@ const fetchData = async () => {
 
   updateImage();
 };
-
-// const reFetchData = async () => {
-//   await fetchData();
-// };
 
 function updateImage() {
   try {
