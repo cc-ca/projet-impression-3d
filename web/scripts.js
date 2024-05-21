@@ -4,7 +4,10 @@ const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
 
-const API_URL = "http://localhost:5000/";
+const host = window.location.href;
+const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
+
+const API_URL = `${formatedHost}:5000/`;
 const IMAGE_URL = "../photo_capturee.jpg";
 
 const FETCH_INTERVAL = 15000; // 15 seconds
@@ -30,7 +33,7 @@ reloadButton.addEventListener("click", async () => {
 
 const stopPrinting = async () => {
   try {
-    await fetch(API_URL, {
+    await fetch(`${API_URL}stop`, {
       method: "POST",
     })
       .then((response) => response.json())
@@ -45,7 +48,7 @@ const stopPrinting = async () => {
 const fetchData = async () => {
   try {
     console.log("Fetching data...");
-    await fetch(API_URL)
+    await fetch(`${API_URL}status`)
       .then((response) => response.json())
       .then((data) => {
         const status = Object.keys(data.states).find(
@@ -65,10 +68,6 @@ const fetchData = async () => {
 
   updateImage();
 };
-
-// const reFetchData = async () => {
-//   await fetchData();
-// };
 
 function updateImage() {
   try {
