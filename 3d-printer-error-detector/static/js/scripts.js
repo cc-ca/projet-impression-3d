@@ -102,7 +102,7 @@ function updateDiagram(errorRate) {
     console.log("Red end: ", redEnd);
 
     let gradient;
-    if (successRate >= MAX_ERROR_RATE) {
+    if (errorRate <= 1 - MAX_ERROR_RATE) {
       gradient = `
         conic-gradient(
           var(--green) 0deg,
