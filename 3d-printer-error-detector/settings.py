@@ -21,11 +21,11 @@ CONFIDENCE_THRESHOLD = 0.9
 MODEL = load_model('model.h5')
 
 def init():
-    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running
+    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_name
     history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
     current_state = State.IDLE
     capture_is_running = False
     error_rate = 0.0
     model_thread = None
     model_thread_running = True
-        
+    image_name = None

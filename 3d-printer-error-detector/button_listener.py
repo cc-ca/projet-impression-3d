@@ -18,7 +18,6 @@ def button_listener():
             if not settings.capture_is_running and settings.model_thread is None and settings.current_state not in {State.STOP, State.ISSUE}: 
                 print("Starting model thread...")
                 settings.capture_is_running, settings.model_thread_running = True, True
-                print(settings.capture_is_running, settings.model_thread_running)
                 settings.model_thread = threading.Thread(target=run)
                 settings.model_thread.start()
             elif not settings.capture_is_running and settings.model_thread is not None and settings.current_state not in {State.STOP, State.ISSUE}:

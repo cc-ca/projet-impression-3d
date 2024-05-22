@@ -2,6 +2,8 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import time
+import settings
 import cv2
 
 def load_and_preprocess_image(image_path):
@@ -25,7 +27,8 @@ def capture_image(model):
         if not os.path.exists(static_folder):
             os.makedirs(static_folder)
 
-        image_path = os.path.join(static_folder, 'photo_capturee.jpg')
+        settings.image_name = time.time() + '.jpg'
+        image_path = os.path.join(static_folder, settings.image_name)
         cv2.imwrite(image_path, frame)
         print("Photo captured successfully.")
 

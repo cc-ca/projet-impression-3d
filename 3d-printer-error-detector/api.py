@@ -19,7 +19,8 @@ class API(threading.Thread):
             return jsonify({
                 'is_running': settings.capture_is_running,
                 'states': {state.name: (settings.current_state == state) for state in settings.State},
-                'error_rate': settings.error_rate
+                'error_rate': settings.error_rate,
+                'image_name': settings.image_name
             })
 
         @self.app.route('/stop', methods=['POST'])
