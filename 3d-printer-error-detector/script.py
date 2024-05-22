@@ -140,7 +140,7 @@ def stop():
     
 # Restart the model thread
 def restart():
-    global model_thread, capture_is_running, model_thread_running, current_state
+    global history, model_thread, capture_is_running, model_thread_running, current_state
     print("Restarting script...")
     change_color(State.OFF)
     capture_is_running = False
@@ -148,6 +148,7 @@ def restart():
         model_thread_running = False
         model_thread.join()
     model_thread = None
+    history.clear()
     current_state = State.IDLE
 
 # Button listener for starting, stopping, and restarting the model thread
