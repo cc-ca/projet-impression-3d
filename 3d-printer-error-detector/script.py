@@ -92,7 +92,7 @@ def change_color(state):
         GPIO.output(pin_green, GPIO.HIGH)
 
 def evaluate_model():
-    global history
+    global history, model_thread_running
     try:
         result = tools.capture(MODEL)
         print(result)
@@ -102,7 +102,7 @@ def evaluate_model():
         else:
             return State.ERROR
     except Exception:
-        while True:
+        while model_thread_running:
             change_color(State.OFF)
             time.sleep(0.5)
             change_color(State.ISSUE)
@@ -144,7 +144,7 @@ def stop():
     change_color(State.ERROR)
     time.sleep(SLEEP_INTERVAL)
     GPIO.output(pin_relais, GPIO.LOW)
-    while True:
+    while model_thread_running:
         change_color(State.OFF)
         time.sleep(0.5)
         change_color(State.ERROR)
@@ -160,11 +160,10 @@ def restart():
         model_thread_running = False
         model_thread.join()
     model_thread = None
-    change_color(State.IDLE)
     current_state = State.IDLE
 
 def button_listener():
-    global capture_is_running, current_state, model_thread
+    global capture_is_running, current_state, model_thread, model_thread_running
     button_press_start_time = None
     while True:
         if GPIO.input(pin_button) == GPIO.HIGH:
@@ -178,6 +177,7 @@ def button_listener():
             if not capture_is_running and model_thread is None and current_state != State.STOP and current_state != State.ISSUE: 
                 print("Starting model thread...")
                 capture_is_running = True
+                model_thread_running = True
                 model_thread = threading.Thread(target=run)
                 model_thread.start()
             elif not capture_is_running and model_thread is not None and current_state != State.STOP and current_state != State.ISSUE:
