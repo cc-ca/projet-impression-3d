@@ -53,7 +53,7 @@ setup_webserver: /usr/bin/apt 3d-printer-error-detector/web/
 	sudo apt install apache2
 
 	@echo "Configuration du serveur web"
-	sudo cp 3d-printer-error-detector/web/* /var/www/html/
+	sudo cp -rp 3d-printer-error-detector/web/* /var/www/html/
 	sudo systemctl enable apache2.service
 
 
