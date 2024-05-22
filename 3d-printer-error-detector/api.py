@@ -1,15 +1,19 @@
 import threading
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from model_evaluation import stop
 import settings
 
 class API(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, static_folder='static', template_folder='templates')
         self._setup_routes()
 
     def _setup_routes(self):
+        @self.app.route('/')
+        def index():
+            return render_template('index.html')
+
         @self.app.route('/status', methods=['GET'])
         def get_status():
             return jsonify({
@@ -25,3 +29,7 @@ class API(threading.Thread):
 
     def run(self):
         self.app.run(host='0.0.0.0')
+
+if __name__ == '__main__':
+    api = API()
+    api.start()

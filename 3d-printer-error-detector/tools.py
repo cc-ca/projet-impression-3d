@@ -22,7 +22,7 @@ def capture_image(model):
         if not ret:
             raise Exception("Error: Unable to capture image from webcam.")
         
-        image_path = "photo_capturee.jpg"
+        image_path = ".static/images/photo_capturee.jpg"
         cv2.imwrite(image_path, frame)
         print("Photo captured successfully.")
         

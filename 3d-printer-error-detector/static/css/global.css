@@ -1,0 +1,298 @@
+/* FONT */
+@font-face {
+  font-family: "Poetsen One";
+  src: url("./assets/PoetsenOne-Regular.ttf") format("truetype");
+}
+
+/* STYLE RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1;
+  text-rendering: optimizeSpeed;
+}
+
+textarea,
+input {
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+}
+
+/* END OF STYLE RESET */
+
+:root {
+  --default-padding: 1rem;
+  --blue: hsl(210, 100%, 58%);
+  --green: hsl(156, 100%, 39%);
+  --orange: hsl(26, 100%, 59%);
+  --red: hsl(5, 58%, 51%);
+  --gray: hsl(0, 0%, 56%);
+  --primary: var(--green);
+  --onHoverPrimary: hsl(156, 100%, 55%);
+  --error: var(--red);
+  --onBackground: hsl(0, 0%, 93%);
+  --hoverOnBackground: hsl(0, 0%, 80%);
+  --background: hsl(236, 78%, 7%);
+  --breakpoint-mobile: 768px;
+  --breakpoint-tablet: 1090px;
+}
+
+body {
+  font-family: "Poetsen One", sans-serif;
+  min-height: 100dvh;
+  font-weight: 400;
+  font-style: normal;
+
+  background-color: var(--background);
+  color: var(--onBackground);
+}
+
+h1.title {
+  display: flex;
+  align-items: center;
+
+  padding-left: var(--default-padding);
+}
+
+@keyframes waveAnimation {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+div.statusCircle {
+  --circleColor: var(--gray);
+  position: relative;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  background-color: var(--circleColor);
+}
+
+div.statusCircle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background-color: var(--circleColor);
+  animation: waveAnimation 1.5s ease-out infinite;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+main {
+  min-height: 100dvh;
+  padding: var(--default-padding);
+
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--default-padding);
+}
+
+@media screen and (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 5dvh;
+  }
+}
+
+main > * {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--default-padding) * 2);
+}
+
+section {
+  width: max-content;
+  margin: auto;
+}
+
+.printerStatus {
+  display: flex;
+  justify-content: center;
+}
+
+.statusName {
+  color: var(--gray);
+}
+
+.circularDiagramWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--default-padding);
+}
+
+.circularDiagramWrapper > legend {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.circularDiagramWrapper > legend > .legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.circularDiagramWrapper > legend > .legendItem > .legendCircle {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.circularDiagram {
+  --successSize: calc(80 * 360deg / 100);
+  background: conic-gradient(
+    var(--green) 0deg,
+    var(--green) 269deg,
+    var(--orange) 269deg,
+    var(--orange) 271deg,
+    var(--green) 271deg,
+    var(--green) var(--successSize),
+    var(--red) var(--successSize),
+    var(--red) 360deg
+  );
+  position: relative;
+  width: clamp(7.5rem, 80%, 15rem);
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+
+.circularDiagram::after {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: calc(100% - 3rem);
+  height: calc(100% - 3rem);
+  border-radius: 50%;
+  background-color: var(--background);
+}
+
+div.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Poetsen One", sans-serif;
+  font-weight: 400;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: var(--onBackground);
+  color: var(--background);
+  cursor: pointer;
+  transition: 0.3s;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn:hover {
+  background-color: var(--hoverOnBackground);
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn.btn-primary {
+  background-color: var(--primary);
+}
+
+.btn:hover.btn-primary:hover {
+  background-color: var(--onHoverPrimary);
+}
+
+img {
+  background-color: var(--onBackground);
+  border-radius: 0.25rem;
+  aspect-ratio: 16/9;
+  height: 80dvh;
+  max-width: 100%;
+}
+
+.bg-green {
+  background-color: var(--green);
+}
+
+.bg-orange {
+  background-color: var(--orange);
+}
+
+.bg-red {
+  background-color: var(--red);
+}
+
+.font-green {
+  color: var(--green);
+}
+
+.font-orange {
+  color: var(--orange);
+}
+
+.font-red {
+  color: var(--red);
+}
+
+/* SPINNER STYLE */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+}
+
+.spinner {
+  border: 4px solid var(--background);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
