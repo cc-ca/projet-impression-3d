@@ -1,6 +1,7 @@
 # Fichiers d’exécution utilisé par python
 __pycache__/
 .venv/
+env/
 
 # Fichier de travail pour l’entrainement et les tests de modèles
 dataset*/

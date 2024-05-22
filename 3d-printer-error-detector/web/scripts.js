@@ -3,8 +3,17 @@ const reloadButton = document.getElementById("reload");
 const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
+<<<<<<< HEAD
 
 const API_URL = "http://localhost:5000/";
+=======
+const circularDiagram = document.getElementById("circular-diagram");
+
+const host = window.location.href;
+const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
+
+const API_URL = `${formatedHost}:5000/`;
+>>>>>>> origin/dev
 const IMAGE_URL = "../photo_capturee.jpg";
 
 const FETCH_INTERVAL = 15000; // 15 seconds
@@ -30,7 +39,11 @@ reloadButton.addEventListener("click", async () => {
 
 const stopPrinting = async () => {
   try {
+<<<<<<< HEAD
     await fetch(API_URL, {
+=======
+    await fetch(`${API_URL}stop`, {
+>>>>>>> origin/dev
       method: "POST",
     })
       .then((response) => response.json())
@@ -45,7 +58,11 @@ const stopPrinting = async () => {
 const fetchData = async () => {
   try {
     console.log("Fetching data...");
+<<<<<<< HEAD
     await fetch(API_URL)
+=======
+    await fetch(`${API_URL}status`)
+>>>>>>> origin/dev
       .then((response) => response.json())
       .then((data) => {
         const status = Object.keys(data.states).find(
@@ -58,6 +75,11 @@ const fetchData = async () => {
         statusName.textContent =
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
+<<<<<<< HEAD
+=======
+
+        updateDiagram(data.errorRate);
+>>>>>>> origin/dev
       });
   } catch (error) {
     console.log("Error fetching data: ", error);
@@ -66,10 +88,13 @@ const fetchData = async () => {
   updateImage();
 };
 
+<<<<<<< HEAD
 // const reFetchData = async () => {
 //   await fetchData();
 // };
 
+=======
+>>>>>>> origin/dev
 function updateImage() {
   try {
     let timestamp = new Date().getTime();
@@ -79,6 +104,68 @@ function updateImage() {
   }
 }
 
+<<<<<<< HEAD
+=======
+function updateDiagram(errorRate) {
+  try {
+    const MAX_ERROR_RATE = 0.75; // Maximum error rate allowed (50%)
+
+    const successRate = (1 - errorRate) * 100;
+    const successSize = (successRate * 360) / 100;
+
+    console.log("Success rate: ", successRate);
+    console.log("Success size: ", successSize);
+
+    const orangeStart = MAX_ERROR_RATE * 360 - 1;
+    const orangeEnd = orangeStart + 2;
+
+    console.log("Orange start: ", orangeStart);
+    console.log("Orange end: ", orangeEnd);
+
+    const redStart = successSize;
+    const redEnd = 360;
+
+    console.log("Red start: ", redStart);
+    console.log("Red end: ", redEnd);
+
+    let gradient;
+    if (successRate >= MAX_ERROR_RATE) {
+      gradient = `
+        conic-gradient(
+          var(--green) 0deg,
+          var(--green) ${orangeStart}deg,
+          var(--orange) ${orangeStart}deg,
+          var(--orange) ${orangeEnd}deg,
+          var(--green) ${orangeEnd}deg,
+          var(--green) ${successSize}deg,
+          var(--red) ${successSize}deg,
+          var(--red) 360deg
+        )
+      `;
+    } else {
+      gradient = `
+        conic-gradient(
+          var(--green) 0deg,
+          var(--green) ${redStart}deg,
+          var(--red) ${redStart}deg,
+          var(--red) ${orangeStart}deg,
+          var(--orange) ${orangeStart}deg,
+          var(--orange) ${orangeEnd}deg,
+          var(--red) ${orangeEnd}deg,
+          var(--red) ${redEnd}deg
+        )
+      `;
+    }
+
+    // Update the background of the circular diagram
+    circularDiagram.style.background = gradient;
+    console.log("Diagram updated", gradient);
+  } catch (error) {
+    console.log("Error updating diagram: ", error);
+  }
+}
+
+>>>>>>> origin/dev
 setInterval(async () => {
   await fetchData();
 }, FETCH_INTERVAL);
