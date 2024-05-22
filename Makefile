@@ -40,7 +40,7 @@ setup_env: /usr/bin/apt /usr/bin/python3 requirements.txt
 # Enable auto start of the script on boot
 # This will add a cron job to the user's crontab
 # Need to setup the environment first
-setup_autolaunch: .venv/bin/activate 3d-printer-error-detector/script.py
+setup_autolaunch: .venv/bin/activate 3d-printer-error-detector/main.py
 	@echo "Setup script launch on start up"
 	@echo "$$SYSTEMD_SERVICE" | sudo tee /etc/systemd/system/3dprinter_error_detector.service
 	@echo "Reload services and start it on boot"
