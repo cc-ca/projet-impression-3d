@@ -92,7 +92,7 @@ def change_color(state):
         GPIO.output(pin_green, GPIO.HIGH)
 
 def evaluate_model():
-    global history
+    global history, current_state
     try:
         result = tools.capture(MODEL)
         print(result)
@@ -102,6 +102,7 @@ def evaluate_model():
         else:
             return State.ERROR
     except Exception:
+        current_state = State.ISSUE
         while True:
             change_color(State.OFF)
             time.sleep(0.5)
@@ -151,7 +152,7 @@ def stop():
         time.sleep(1)
     
 def restart():
-    global model_thread, capture_is_running, model_thread, model_thread_running, current_state
+    global model_thread, capture_is_running, model_thread_running, current_state
     print("Restarting script...")
     change_color(State.OFF)
     capture_is_running = False
