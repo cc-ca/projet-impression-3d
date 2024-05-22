@@ -8,7 +8,7 @@ PRINT WATCH is a device designed to prevent plastic waste during failed 3D print
 
 PRINT WATCH employs AI with a camera to monitor and detect print failures.
 
-The web-based dashboard (`http://<ip_raspberry>/index`) displays useful information.
+The web-based dashboard (`http://<ip_raspberry>:5000/`) displays useful information.
 
 The State diagram is used to describe the nominal process bellow:
 
@@ -40,7 +40,7 @@ The State diagram is used to describe the nominal process bellow:
         - Connect one leg of the button to GPIO Pin 6.
     - **Switch**:
         - Connect the switch to GPIO Pin 4 .
-    - **Resistors**: Use 220 Ohm resistors for each connection to the RGB LED and the button to the ground
+    - **Resistors**: Use 220 Ohm resistors for each connection to the RGB LED and 10kOhm the button to the ground
 
 ### Software Installation
 1. **Download Raspbian Lite**: Obtain the latest software package from the [official repository](https://www.raspberrypi.com/software/).
