@@ -3,17 +3,12 @@ const reloadButton = document.getElementById("reload");
 const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
-<<<<<<< HEAD
-
-const API_URL = "http://localhost:5000/";
-=======
 const circularDiagram = document.getElementById("circular-diagram");
 
 const host = window.location.href;
 const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
 
 const API_URL = `${formatedHost}:5000/`;
->>>>>>> origin/dev
 const IMAGE_URL = "../photo_capturee.jpg";
 
 const FETCH_INTERVAL = 15000; // 15 seconds
@@ -39,11 +34,7 @@ reloadButton.addEventListener("click", async () => {
 
 const stopPrinting = async () => {
   try {
-<<<<<<< HEAD
-    await fetch(API_URL, {
-=======
     await fetch(`${API_URL}stop`, {
->>>>>>> origin/dev
       method: "POST",
     })
       .then((response) => response.json())
@@ -58,11 +49,7 @@ const stopPrinting = async () => {
 const fetchData = async () => {
   try {
     console.log("Fetching data...");
-<<<<<<< HEAD
-    await fetch(API_URL)
-=======
     await fetch(`${API_URL}status`)
->>>>>>> origin/dev
       .then((response) => response.json())
       .then((data) => {
         const status = Object.keys(data.states).find(
@@ -75,11 +62,7 @@ const fetchData = async () => {
         statusName.textContent =
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
-<<<<<<< HEAD
-=======
-
         updateDiagram(data.errorRate);
->>>>>>> origin/dev
       });
   } catch (error) {
     console.log("Error fetching data: ", error);
@@ -88,13 +71,6 @@ const fetchData = async () => {
   updateImage();
 };
 
-<<<<<<< HEAD
-// const reFetchData = async () => {
-//   await fetchData();
-// };
-
-=======
->>>>>>> origin/dev
 function updateImage() {
   try {
     let timestamp = new Date().getTime();
@@ -104,8 +80,6 @@ function updateImage() {
   }
 }
 
-<<<<<<< HEAD
-=======
 function updateDiagram(errorRate) {
   try {
     const MAX_ERROR_RATE = 0.75; // Maximum error rate allowed (50%)
@@ -165,7 +139,6 @@ function updateDiagram(errorRate) {
   }
 }
 
->>>>>>> origin/dev
 setInterval(async () => {
   await fetchData();
 }, FETCH_INTERVAL);
