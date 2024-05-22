@@ -1,7 +1,7 @@
 /* FONT */
 @font-face {
   font-family: "Poetsen One";
-  src: url("./assets/PoetsenOne-Regular.ttf") format("truetype");
+  src: url("../assets/PoetsenOne-Regular.ttf") format("truetype");
 }
 
 /* STYLE RESET */

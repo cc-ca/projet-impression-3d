@@ -48,17 +48,8 @@ setup_autolaunch: .venv/bin/activate 3d-printer-error-detector/main.py
 	sudo systemctl enable 3dprinter_error_detector.service
 
 
-setup_webserver: /usr/bin/apt 3d-printer-error-detector/web/
-	@echo "Installation du serveur web"
-	sudo apt install apache2
-
-	@echo "Configuration du serveur web"
-	sudo cp -rp 3d-printer-error-detector/web/* /var/www/html/
-	sudo systemctl enable apache2.service
-
-
 # Install all dependancies in an environment
-setup: setup_env setup_autolaunch setup_webserver
+setup: setup_env setup_autolaunch
 
 
 # Start capture manually

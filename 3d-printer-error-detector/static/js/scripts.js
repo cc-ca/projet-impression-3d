@@ -8,10 +8,10 @@ const circularDiagram = document.getElementById("circular-diagram");
 const host = window.location.href;
 const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
 
-const API_URL = `${formatedHost}:5000/`;
-const IMAGE_URL = "../images/photo_capturee.jpg";
+const API_URL = `${formatedHost}`;
+const IMAGE_URL = "static/images/photo_capturee.jpg";
 
-const FETCH_INTERVAL = 15000; // 15 seconds
+const FETCH_INTERVAL = 5000; // 5 seconds
 
 const MapStatusAndColor = {
   OFF: "gray",
@@ -34,7 +34,7 @@ reloadButton.addEventListener("click", async () => {
 
 const stopPrinting = async () => {
   try {
-    await fetch(`${API_URL}stop`, {
+    await fetch(`${API_URL}/stop`, {
       method: "POST",
     })
       .then((response) => response.json())
@@ -49,7 +49,7 @@ const stopPrinting = async () => {
 const fetchData = async () => {
   try {
     console.log("Fetching data...");
-    await fetch(`${API_URL}status`)
+    await fetch(`${API_URL}/status`)
       .then((response) => response.json())
       .then((data) => {
         const status = Object.keys(data.states).find(
@@ -62,7 +62,7 @@ const fetchData = async () => {
         statusName.textContent =
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
-        updateDiagram(data.errorRate);
+        updateDiagram(data.error_rate);
       });
   } catch (error) {
     console.log("Error fetching data: ", error);
@@ -73,8 +73,7 @@ const fetchData = async () => {
 
 function updateImage() {
   try {
-    let timestamp = new Date().getTime();
-    printerImage.src = `${IMAGE_URL}?${timestamp}`;
+    printerImage.src = `${IMAGE_URL}`;
   } catch (error) {
     console.log("Error updating image: ", error);
   }

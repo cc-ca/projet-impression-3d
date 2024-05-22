@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 import cv2
 
 def load_and_preprocess_image(image_path):
@@ -16,21 +17,20 @@ def predict_defect(model, image_path):
     return '0' if np.argmax(predictions) == 0 else '1'
 
 def capture_image(model):
-    try:
-        cap = cv2.VideoCapture(0)  # Open default webcam
-        ret, frame = cap.read()
-        if not ret:
-            raise Exception("Error: Unable to capture image from webcam.")
-        
-        image_path = ".static/images/photo_capturee.jpg"
-        cv2.imwrite(image_path, frame)
-        print("Photo captured successfully.")
-        
-        img = Image.open(image_path)
-        plt.imshow(img)
-        plt.axis('off')
-        plt.show()
-        
-        return predict_defect(model, image_path)
-    finally:
-        cap.release()
+    cap = cv2.VideoCapture(0)  # Open default webcam
+    ret, frame = cap.read()
+
+    static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static', 'images')
+    if not os.path.exists(static_folder):
+        os.makedirs(static_folder)
+
+    image_path = os.path.join(static_folder, 'photo_capturee.jpg')
+    cv2.imwrite(image_path, frame)
+    print("Photo captured successfully.")
+
+    img = Image.open(image_path)
+    plt.imshow(img)
+    plt.axis('off')
+    plt.show()
+
+    return predict_defect(model, image_path)
