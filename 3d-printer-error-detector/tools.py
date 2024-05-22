@@ -5,36 +5,32 @@ import cv2
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    plt.imshow(img)
-    img = cv2.resize(img, (255, 255))  # Assurez-vous que la taille correspond à celle utilisée lors de l'entraînement
-    img = img / 255.0  # Normalisez les valeurs des pixels
-    img = np.expand_dims(img, axis=0)  # Ajoutez une dimension pour représenter le lot (batch)
+    img = cv2.resize(img, (255, 255))  # Ensure the size matches the training input size
+    img = img / 255.0  # Normalize pixel values
+    img = np.expand_dims(img, axis=0)  # Add batch dimension
     return img
 
-def predict_defect_multi_class(model, image_path):
-    preprocessed_img = load_and_preprocess_image(image_path)
-    predictions = model.predict(preprocessed_img)
-    # Interprétez les prédictions, 0 = pas de défaut, 1 = défaut
-    class_labels = ['0', '1']
-    predicted_class = class_labels[np.argmax(predictions)]
-    return predicted_class
+def predict_defect(model, image_path):
+    img = load_and_preprocess_image(image_path)
+    predictions = model.predict(img)
+    return '0' if np.argmax(predictions) == 0 else '1'
 
-
-
-def capture(model):
+def capture_image(model):
     try:
-        cap = cv2.VideoCapture(0) # Ouvrir la webcam (la webcam par défaut a l'ID 0)
-        # Capturer une image
+        cap = cv2.VideoCapture(0)  # Open default webcam
         ret, frame = cap.read()
-        cv2.imwrite("photo_capturee.jpg", frame)
-        print("Photo capturée avec succès.")
-        img = Image.open('photo_capturee.jpg')
+        if not ret:
+            raise Exception("Error: Unable to capture image from webcam.")
+        
+        image_path = "photo_capturee.jpg"
+        cv2.imwrite(image_path, frame)
+        print("Photo captured successfully.")
+        
+        img = Image.open(image_path)
         plt.imshow(img)
-        plt.axis('off')  # Masquer les axes
+        plt.axis('off')
         plt.show()
-        result = predict_defect_multi_class(model, 'photo_capturee.jpg')
+        
+        return predict_defect(model, image_path)
+    finally:
         cap.release()
-        return(result)
-    except:
-        cap.release()
-        raise Exception("Erreur: Impossible d'ouvrir la webcam.")
