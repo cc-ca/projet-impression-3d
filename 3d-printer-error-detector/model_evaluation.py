@@ -14,9 +14,9 @@ def evaluate_model():
     except Exception:
         while settings.model_thread_running:
             change_color(State.OFF)
-            time.sleep(0.3)
+            time.sleep(settings.SLEEP_LED)
             change_color(State.ISSUE)
-            time.sleep(1)
+            time.sleep(settings.SLEEP_LED)
 
 def run():
     change_color(State.WARMUP)
@@ -49,6 +49,11 @@ def stop():
     change_color(State.ERROR)
     time.sleep(SLEEP_INTERVAL)
     GPIO.output(PIN_RELAIS, GPIO.LOW)
+    while settings.model_thread_running:
+        change_color(State.OFF)
+        time.sleep(settings.SLEEP_LED)
+        change_color(State.ERROR)
+        time.sleep(settings.SLEEP_LED)
     
 def restart():
     print("Restarting script...")
