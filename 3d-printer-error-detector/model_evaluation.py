@@ -30,6 +30,7 @@ def run():
                 success_count = settings.history.count("0")
                 failure_count = settings.history.count("1")
                 settings.error_rate = failure_count / (success_count + failure_count)
+                print("error rate: ", settings.error_rate, " confidence threshold: ", settings.confidence_threshold)
                 if settings.error_rate >= settings.confidence_threshold:
                     print(f"Threshold exceeded - Error rate: {settings.error_rate:.2%}")
                     stop()
