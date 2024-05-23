@@ -274,12 +274,19 @@ div.buttonWrapper {
   background-color: var(--onHoverPrimary);
 }
 
-img {
+aside {
   background-color: var(--onBackground);
   border-radius: 0.25rem;
   aspect-ratio: 16/9;
   height: 80dvh;
   max-width: 100%;
+}
+
+image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.25rem;
 }
 
 .bg-green {
