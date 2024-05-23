@@ -32,7 +32,7 @@ class API(threading.Thread):
                 stop()
                 return jsonify({'message': 'Printer stopped'}), 200
 
-        @app.route('/modify_threshold', methods=['POST'])
+        @self.app.route('/modify_threshold', methods=['POST'])
         def modify_threshold():
             data = request.get_json()
             new_threshold = data.get('confidence_threshold')
