@@ -26,6 +26,8 @@ class API(threading.Thread):
 
         @self.app.route('/stop', methods=['POST'])
         def stop_printer():
+            if settings.current_state == settings.State.STOP:
+                return jsonify({'message': 'Printer already stopped'}), 200
             stop()
             return jsonify({'message': 'Printer stopped'}), 200
 
