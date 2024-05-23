@@ -8,7 +8,7 @@ IA3D  is a device designed to prevent plastic waste during failed 3D prints by u
 
 IA3D employs AI with a camera to monitor and detect print failures.
 
-The web-based dashboard (`http://<ip_raspberry>/`) displays useful information.
+The web-based dashboard (`http://<ip_raspberry>/:5000`) displays useful information.
 
 The State diagram is used to describe the nominal process bellow:
 
