@@ -28,8 +28,9 @@ class API(threading.Thread):
         def stop_printer():
             if settings.current_state == settings.State.STOP:
                 return jsonify({'message': 'Printer already stopped'}), 200
-            stop()
-            return jsonify({'message': 'Printer stopped'}), 200
+            else:
+                stop()
+                return jsonify({'message': 'Printer stopped'}), 200
 
         @self.app.route('/modify_threshold', methods=['POST'])
         def modify_threshold():
