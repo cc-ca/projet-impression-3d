@@ -1,6 +1,7 @@
 # Fichiers d’exécution utilisé par python
 __pycache__/
 .venv/
+env/
 
 # Fichier de travail pour l’entrainement et les tests de modèles
 dataset*/
@@ -10,6 +11,7 @@ ok cut/
 models/
 *.h5
 *.keras
+!model.h5
 
 brouillon.txt
 

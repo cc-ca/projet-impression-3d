@@ -11,9 +11,9 @@ import cv2
 import random
 import time
 import datetime
-#model.save('models/88-83.h5')
+#model.save('../88-83.h5')
 
-model = load_model('model.h5')
+model = load_model('../model.h5')
 
 
 def load_and_preprocess_image(image_path):
@@ -54,7 +54,7 @@ def predict(dir):
 
 def capture():
   # Ouvrir la webcam (la webcam par défaut a l'ID 0)
-  cap = cv2.VideoCapture(0)
+  cap = cv2.VideoCapture(1)
 
   # Vérifier si la webcam est ouverte correctement
   if not cap.isOpened():
@@ -69,14 +69,11 @@ def capture():
   if ret:
       cv2.imwrite("photo_capturee.jpg", frame)
       print("Photo capturée avec succès.")
-
       result = predict_defect_multi_class(model, 'photo_capturee.jpg')
       img = Image.open('photo_capturee.jpg')
       #plt.imshow(img)
-      #plt.axis('off')  # Masquer les axes
+      plt.axis('off')  # Masquer les axes
       now = datetime.datetime.now().strftime("%H:%M:%S")
-      
-
       #plt.show()
       print(f"Prédiction pour la capture caméra : {result}")
       print(f"à {now}")

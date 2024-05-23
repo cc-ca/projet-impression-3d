@@ -5,16 +5,33 @@
 
 SHELL := /bin/bash
 
+define SYSTEMD_SERVICE
+[Unit]
+Description=Run 3D printer Error Detection python script on boot
+After=default.target
+
+[Service]
+Type=exec
+WorkingDirectory=$(PWD)
+ExecStart=/usr/bin/bash -c "source .venv/bin/activate && cd 3d-printer-error-detector && python main.py"
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+endef
+export SYSTEMD_SERVICE
+
+
 # Install all dependancies in a virtual environment
-setup_env: /usr/bin/python3 requirements.txt
-	echo "Installation des dépendances système nécessaires"
+setup_env: /usr/bin/apt /usr/bin/python3 requirements.txt
+	@echo "Installation des dépendances système nécessaires"
 	sudo apt update && sudo apt upgrade
 	sudo apt install python3-dev libhdf5-dev
 
-	echo "Création de l'environnement virtuel"
+	@echo "Création de l'environnement virtuel"
 	/usr/bin/python3 -m venv .venv
 
-	echo "Installation des dépendances python nécessaires (peux être long)"
+	@echo "Installation des dépendances python nécessaires (peux être long)"
 	source .venv/bin/activate &&\
 	python -m pip install --upgrade pip &&\
 	python -m pip install -r requirements.txt
@@ -23,12 +40,12 @@ setup_env: /usr/bin/python3 requirements.txt
 # Enable auto start of the script on boot
 # This will add a cron job to the user's crontab
 # Need to setup the environment first
-setup_autolaunch: .venv/bin/activate script.py
-	echo "Setup script launch on start up"
-	(\
-		crontab -l 2>/dev/null; # Force crontab to be created if it doesn't exist \
-		echo "@reboot source $(PWD)/.venv/bin/activate && python $(PWD)/script.py"\
-	) | crontab - # Add the cron job to the user's crontab
+setup_autolaunch: .venv/bin/activate 3d-printer-error-detector/main.py
+	@echo "Setup script launch on start up"
+	@echo "$$SYSTEMD_SERVICE" | sudo tee /etc/systemd/system/3dprinter_error_detector.service
+	@echo "Reload services and start it on boot"
+	sudo systemctl daemon-reload
+	sudo systemctl enable 3dprinter_error_detector.service
 
 
 # Install all dependancies in an environment
@@ -37,9 +54,10 @@ setup: setup_env setup_autolaunch
 
 # Start capture manually
 # Need to setup the environment first by running 'make setup' or as a minimum 'make setup_env'
-run: .venv/bin/activate script.py
+run: .venv/bin/activate 3d-printer-error-detector/main.py
 	source .venv/bin/activate &&\
-	python script.py
+	cd 3d-printer-error-detector &&\
+	python main.py
 
 
 setup_and_run: setup run
