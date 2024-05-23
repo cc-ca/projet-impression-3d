@@ -116,14 +116,18 @@ function updateDiagram(errorRate) {
     const successRate = (1 - errorRate) * 100;
     const successSize = (successRate * 360) / 100;
 
-    const orangeStart = errorLimitRate * 360 - 1;
+    const orangeStart = 360 - (errorLimitRate * 360 - 1);
     const orangeEnd = orangeStart + 2;
 
     const redStart = successSize;
     const redEnd = 360;
 
     let gradient;
-    if (!errorRate || typeof errorRate !== "number") {
+    if (
+      errorRate === undefined ||
+      errorRate === null ||
+      typeof errorRate !== "number"
+    ) {
       gradient = `
         conic-gradient(
           var(--gray) 0deg,
