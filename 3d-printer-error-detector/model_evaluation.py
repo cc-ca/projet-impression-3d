@@ -6,12 +6,12 @@ from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, MODEL, PIN_
 import settings
 
 def evaluate_model():
-    try:
-        result = tools.capture_image(MODEL)
+    if settings.current_state != State.ISSUE:
+        result = tools.predict_defect(MODEL, settings.image_name)
         print(result)
         settings.history.append(result)
         return State.CORRECT if result == "0" else State.ERROR
-    except Exception:
+    else:
         while settings.model_thread_running:
             change_color(State.OFF)
             time.sleep(settings.SLEEP_LED)

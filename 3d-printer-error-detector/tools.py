@@ -18,33 +18,28 @@ def predict_defect(model, image_path):
     predictions = model.predict(img)
     return '0' if np.argmax(predictions) == 0 else '1'
 
-def capture_image(model):
-    try:
-        cap = cv2.VideoCapture(0)  # Open default webcam
-        ret, frame = cap.read()
+def capture_image():
+    while True:
+        try:
+            cap = cv2.VideoCapture(0)  # Open default webcam
+            ret, frame = cap.read()
 
-        static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static', 'images')
-        if not os.path.exists(static_folder):
-            os.makedirs(static_folder)
+            static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static', 'images')
+            if not os.path.exists(static_folder):
+                os.makedirs(static_folder)
 
-        # Remove old images
-        files = os.listdir(static_folder)
-        for file in files:
-            file_path = os.path.join(static_folder, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
+            # Remove old images
+            files = os.listdir(static_folder)
+            for file in files:
+                file_path = os.path.join(static_folder, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
 
-        settings.image_name = str(int(time.time())) + '.jpg'
-        image_path = os.path.join(static_folder, settings.image_name)
-        cv2.imwrite(image_path, frame)
-        print("Photo captured successfully.")
-
-        img = Image.open(image_path)
-        plt.imshow(img)
-        plt.axis('off')
-        plt.show()
-        cap.release()
-
-        return predict_defect(model, image_path)
-    finally:
-        cap.release()
+            settings.image_name = str(int(time.time())) + '.jpg'
+            image_path = os.path.join(static_folder, settings.image_name)
+            cv2.imwrite(image_path, frame)
+            cap.release()
+            time.sleep(settings.SLEEP_INTERVAL)
+        finally:
+            cap.release()
+            settings.current_state = settings.State.ISSUE
