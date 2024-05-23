@@ -27,6 +27,13 @@ def capture_image(model):
         if not os.path.exists(static_folder):
             os.makedirs(static_folder)
 
+        # Remove old images
+        files = os.listdir(static_folder)
+        for file in files:
+            file_path = os.path.join(static_folder, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
         settings.image_name = time.time() + '.jpg'
         image_path = os.path.join(static_folder, settings.image_name)
         cv2.imwrite(image_path, frame)
