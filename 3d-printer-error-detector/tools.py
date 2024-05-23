@@ -34,7 +34,7 @@ def capture_image(model):
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
-        settings.image_name = time.time() + '.jpg'
+        settings.image_name = str(int(time.time())) + '.jpg'
         image_path = os.path.join(static_folder, settings.image_name)
         cv2.imwrite(image_path, frame)
         print("Photo captured successfully.")
