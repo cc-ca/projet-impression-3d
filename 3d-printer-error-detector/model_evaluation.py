@@ -41,13 +41,11 @@ def run():
                 time.sleep(SLEEP_INTERVAL)
             if not settings.capture_is_running and settings.current_state != State.IDLE:
                 change_color(State.IDLE)
-    finally:
-        change_color(State.IDLE)
 
 def stop():
     settings.current_state, settings.model_thread_running, settings.capture_is_running = State.STOP, False, False
     change_color(State.ERROR)
-    time.sleep(SLEEP_INTERVAL)
+    time.sleep(SLEEP_LED)
     GPIO.output(PIN_RELAIS, GPIO.LOW)
     while settings.model_thread_running:
         change_color(State.OFF)
@@ -65,3 +63,4 @@ def restart():
     settings.model_thread = None
     settings.history.clear()
     settings.current_state = State.IDLE
+    change_color(State.IDLE)
