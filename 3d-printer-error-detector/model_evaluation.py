@@ -57,10 +57,10 @@ def restart():
     print("Restarting script...")
     change_color(State.OFF)
     settings.capture_is_running = False
+    settings.current_state = State.IDLE
     if settings.model_thread and settings.model_thread.is_alive():
         settings.model_thread_running = False
         settings.model_thread.join()
     settings.model_thread = None
     settings.history.clear()
-    settings.current_state = State.IDLE
     change_color(State.IDLE)
