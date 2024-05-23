@@ -1,14 +1,14 @@
-PrintGuard 3D: Real-Time Error Detection for 3D Printing
+# PrintGuard: Real-Time Error Detection for 3D Printing
 
 ## Overview
 
-IA3D  is a device designed to prevent plastic waste during failed 3D prints by using AI and a camera to detect failures.
+PrintGuard  is a device designed to prevent plastic waste during failed 3D prints by using AI and a camera to detect failures.
 
 ## 1. How it Works
 
-IA3D employs AI with a camera to monitor and detect print failures.
+PrintGuard employs AI with a camera to monitor and detect print failures.
 
-The web-based dashboard (`http://<ip_raspberry>/`) displays useful information.
+The web-based dashboard (`http://<ip_raspberry>:5000/`) displays useful information.
 
 The State diagram is used to describe the nominal process bellow:
 
