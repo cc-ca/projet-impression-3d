@@ -274,7 +274,7 @@ div.buttonWrapper {
   background-color: var(--onHoverPrimary);
 }
 
-aside {
+aside > div {
   background-color: var(--onBackground);
   border-radius: 0.25rem;
   aspect-ratio: 16/9;
