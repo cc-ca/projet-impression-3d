@@ -46,6 +46,7 @@ def stop():
     change_color(State.ERROR)
     time.sleep(SLEEP_LED)
     GPIO.output(PIN_RELAIS, GPIO.LOW)
+    print(settings.model_thread_running)
     while settings.model_thread_running:
         change_color(State.OFF)
         time.sleep(settings.SLEEP_LED)
