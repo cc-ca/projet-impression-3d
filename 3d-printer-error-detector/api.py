@@ -36,12 +36,12 @@ class API(threading.Thread):
         def modify_threshold():
             data = request.get_json()
             new_threshold = data.get('confidence_threshold')
-            if new_threshold is not None:
-                settings.confidence_threshold = new_threshold
+            try:
+                settings.confidence_threshold = round(float(new_threshold), 2)
                 return jsonify({'message': 'Confidence threshold updated'}), 200
-            else:
+            except ValueError:
                 return jsonify({'error': 'Invalid input'}), 400
-            
+        
     def run(self):
         self.app.run(host='0.0.0.0')
 

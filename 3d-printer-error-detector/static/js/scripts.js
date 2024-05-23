@@ -35,20 +35,25 @@ reloadButton.addEventListener("click", async () => {
   await fetchData();
 });
 
-errorLimitRange.addEventListener("input", async (event) => {
+errorLimitRange.addEventListener("input", (event) => {
   rangeValue.textContent = event.target.value;
 });
+
 errorLimitRange.addEventListener("change", async (event) => {
   errorLimitRate = event.target.value;
   try {
-    await fetch(`${API_URL}/confidence_threshold`, {
+    const response = await fetch(`${API_URL}/modify_threshold`, {
       method: "POST",
-      body: JSON.stringify({ confidence_threshold: errorLimitRate }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return;
-      });
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ confidence_threshold: errorLimitRate })
+    });
+    
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to update threshold');
+    }
   } catch (error) {
     console.log("Error updating error limit rate: ", error);
   }
