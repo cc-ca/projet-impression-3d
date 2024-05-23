@@ -45,14 +45,14 @@ errorLimitRange.addEventListener("change", async (event) => {
     const response = await fetch(`${API_URL}/modify_threshold`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ confidence_threshold: errorLimitRate })
+      body: JSON.stringify({ confidence_threshold: errorLimitRate }),
     });
-    
+
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to update threshold');
+      throw new Error(data.error || "Failed to update threshold");
     }
   } catch (error) {
     console.log("Error updating error limit rate: ", error);
@@ -116,7 +116,7 @@ function updateDiagram(errorRate) {
     const successRate = (1 - errorRate) * 100;
     const successSize = (successRate * 360) / 100;
 
-    const orangeStart = errorRate * 360 - 1;
+    const orangeStart = errorLimitRate * 360 - 1;
     const orangeEnd = orangeStart + 2;
 
     const redStart = successSize;
