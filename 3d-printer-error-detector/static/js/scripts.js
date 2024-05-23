@@ -116,7 +116,7 @@ function updateDiagram(errorRate) {
     const successRate = (1 - errorRate) * 100;
     const successSize = (successRate * 360) / 100;
 
-    const orangeStart = 360 - (errorLimitRate * 360 - 1);
+    const orangeStart = (1 - errorLimitRate) * 360 - 1;
     const orangeEnd = orangeStart + 2;
 
     const redStart = successSize;
