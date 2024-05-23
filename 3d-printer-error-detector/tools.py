@@ -40,6 +40,6 @@ def capture_image():
             cv2.imwrite(image_path, frame)
             cap.release()
             time.sleep(settings.SLEEP_INTERVAL)
-        finally:
+        except:
             cap.release()
             settings.current_state = settings.State.ISSUE
