@@ -4,6 +4,8 @@ const statusCircle = document.getElementById("status-circle");
 const statusName = document.getElementById("status-name");
 const printerImage = document.getElementById("printer-image");
 const circularDiagram = document.getElementById("circular-diagram");
+const errorLimitRange = document.getElementById("error-limit-range");
+const rangeValue = document.getElementById("range-value");
 
 const host = window.location.href;
 const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
@@ -12,6 +14,7 @@ const API_URL = `${formatedHost}`;
 const IMAGE_URL = "static/images/";
 
 const FETCH_INTERVAL = 5000; // 5 seconds
+let errorLimitRate = 0.75;
 
 const MapStatusAndColor = {
   OFF: "gray",
@@ -32,6 +35,25 @@ reloadButton.addEventListener("click", async () => {
   await fetchData();
 });
 
+errorLimitRange.addEventListener("input", async (event) => {
+  rangeValue.textContent = event.target.value;
+});
+errorLimitRange.addEventListener("change", async (event) => {
+  errorLimitRate = event.target.value;
+  try {
+    await fetch(`${API_URL}/confidence_threshold`, {
+      method: "POST",
+      body: JSON.stringify({ confidence_threshold: errorLimitRate }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return;
+      });
+  } catch (error) {
+    console.log("Error updating error limit rate: ", error);
+  }
+});
+
 const stopPrinting = async () => {
   try {
     await fetch(`${API_URL}/stop`, {
@@ -48,7 +70,6 @@ const stopPrinting = async () => {
 
 const fetchData = async () => {
   try {
-    console.log("Fetching data...");
     await fetch(`${API_URL}/status`)
       .then((response) => response.json())
       .then((data) => {
@@ -59,6 +80,13 @@ const fetchData = async () => {
           "--circleColor",
           `var(--${MapStatusAndColor[status]})`
         );
+
+        if (data.confidence_threshold) {
+          errorLimitRate = data.confidence_threshold;
+          errorLimitRange.value = errorLimitRate;
+          rangeValue.textContent = errorLimitRate;
+        }
+
         statusName.textContent =
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
@@ -80,28 +108,24 @@ function updateImage(imageName) {
 
 function updateDiagram(errorRate) {
   try {
-    const MAX_ERROR_RATE = 0.75; // Maximum error rate allowed (50%)
-
     const successRate = (1 - errorRate) * 100;
     const successSize = (successRate * 360) / 100;
 
-    console.log("Success rate: ", successRate);
-    console.log("Success size: ", successSize);
-
-    const orangeStart = MAX_ERROR_RATE * 360 - 1;
+    const orangeStart = errorRate * 360 - 1;
     const orangeEnd = orangeStart + 2;
-
-    console.log("Orange start: ", orangeStart);
-    console.log("Orange end: ", orangeEnd);
 
     const redStart = successSize;
     const redEnd = 360;
 
-    console.log("Red start: ", redStart);
-    console.log("Red end: ", redEnd);
-
     let gradient;
-    if (errorRate <= 1 - MAX_ERROR_RATE) {
+    if (!errorRate || typeof errorRate !== "number") {
+      gradient = `
+        conic-gradient(
+          var(--gray) 0deg,
+          var(--gray) 360deg
+        )
+      `;
+    } else if (errorRate <= 1 - errorRate) {
       gradient = `
         conic-gradient(
           var(--green) 0deg,
@@ -131,7 +155,6 @@ function updateDiagram(errorRate) {
 
     // Update the background of the circular diagram
     circularDiagram.style.background = gradient;
-    console.log("Diagram updated", gradient);
   } catch (error) {
     console.log("Error updating diagram: ", error);
   }
