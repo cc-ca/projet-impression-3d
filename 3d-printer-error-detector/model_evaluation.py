@@ -30,6 +30,7 @@ def run():
                 success_count = settings.history.count("0")
                 failure_count = settings.history.count("1")
                 settings.error_rate = failure_count / (success_count + failure_count)
+                print("error rate: ", settings.error_rate, " confidence threshold: ", settings.confidence_threshold)
                 if settings.error_rate >= settings.confidence_threshold:
                     print(f"Threshold exceeded - Error rate: {settings.error_rate:.2%}")
                     stop()
@@ -56,10 +57,10 @@ def restart():
     print("Restarting script...")
     change_color(State.OFF)
     settings.capture_is_running = False
+    settings.current_state = State.IDLE
     if settings.model_thread and settings.model_thread.is_alive():
         settings.model_thread_running = False
         settings.model_thread.join()
     settings.model_thread = None
     settings.history.clear()
-    settings.current_state = State.IDLE
     change_color(State.IDLE)
