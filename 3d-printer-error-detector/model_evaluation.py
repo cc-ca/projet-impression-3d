@@ -2,7 +2,7 @@ import time
 import RPi.GPIO as GPIO
 from gpio_setup import change_color
 import tools
-from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, CONFIDENCE_THRESHOLD, MODEL, PIN_RELAIS
+from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, MODEL, PIN_RELAIS
 import settings
 
 def evaluate_model():
@@ -30,7 +30,7 @@ def run():
                 success_count = settings.history.count("0")
                 failure_count = settings.history.count("1")
                 settings.error_rate = failure_count / (success_count + failure_count)
-                if settings.error_rate >= CONFIDENCE_THRESHOLD:
+                if settings.error_rate >= settings.confidence_threshold:
                     print(f"Threshold exceeded - Error rate: {settings.error_rate:.2%}")
                     stop()
                 else:
