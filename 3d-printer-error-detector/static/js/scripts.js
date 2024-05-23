@@ -11,7 +11,6 @@ const host = window.location.href;
 const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
 
 const API_URL = `${formatedHost}`;
-const IMAGE_URL = "static/images/";
 
 const FETCH_INTERVAL = 5000; // 5 seconds
 let errorLimitRate = 0.75;
@@ -96,7 +95,7 @@ const fetchData = async () => {
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
         updateDiagram(data.error_rate);
-        updateImage(data.image_name);
+        updateImage(data.image_path);
       });
   } catch (error) {
     console.log("Error fetching data: ", error);
@@ -105,7 +104,7 @@ const fetchData = async () => {
 
 function updateImage(imageName) {
   try {
-    printerImage.src = `${IMAGE_URL}${imageName}`;
+    printerImage.src = `${imageName}`;
   } catch (error) {
     console.log("Error updating image: ", error);
   }

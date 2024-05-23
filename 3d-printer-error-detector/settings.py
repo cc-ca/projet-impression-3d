@@ -20,12 +20,12 @@ SLEEP_INTERVAL, CAPTURE_INTERVAL, SLEEP_LED = 5, 3, 0.1
 MODEL = load_model('model.h5')
 
 def init():
-    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_name, confidence_threshold
+    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_path, confidence_threshold
     history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
     current_state = State.IDLE
     capture_is_running = False
     error_rate = None
     model_thread = None
     model_thread_running = True
-    image_name = None
+    image_path = None
     confidence_threshold = 0.8

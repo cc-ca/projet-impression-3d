@@ -35,9 +35,10 @@ def capture_image():
                 if os.path.isfile(file_path):
                     os.remove(file_path)
 
-            settings.image_name = str(int(time.time())) + '.jpg'
-            image_path = os.path.join(static_folder, settings.image_name)
+            image_name = str(int(time.time())) + '.jpg'
+            image_path = os.path.join(static_folder, image_name)
             cv2.imwrite(image_path, frame)
+            settings.image_path = image_path
             cap.release()
             time.sleep(settings.SLEEP_INTERVAL)
         except:
