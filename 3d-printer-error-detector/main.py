@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 from gpio_setup import change_color, setup_gpio
 from api import API
 from button_listener import button_listener
+from tools import capture_image
 import settings
 
 if __name__ == "__main__":
@@ -13,6 +14,7 @@ if __name__ == "__main__":
         setup_gpio()
         change_color(settings.State.IDLE)
         threading.Thread(target=button_listener).start()
+        threading.Thread(target=capture_image).start()
         api = API()
         api.start()
         while True:

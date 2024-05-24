@@ -11,7 +11,6 @@ const host = window.location.href;
 const formatedHost = host.endsWith("/") ? host.slice(0, -1) : host;
 
 const API_URL = `${formatedHost}`;
-const IMAGE_URL = "static/images/";
 
 const FETCH_INTERVAL = 5000; // 5 seconds
 let errorLimitRate = 0.75;
@@ -45,14 +44,14 @@ errorLimitRange.addEventListener("change", async (event) => {
     const response = await fetch(`${API_URL}/modify_threshold`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ confidence_threshold: errorLimitRate })
+      body: JSON.stringify({ confidence_threshold: errorLimitRate }),
     });
-    
+
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to update threshold');
+      throw new Error(data.error || "Failed to update threshold");
     }
   } catch (error) {
     console.log("Error updating error limit rate: ", error);
@@ -96,7 +95,7 @@ const fetchData = async () => {
           status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
         statusName.style.color = `var(--${MapStatusAndColor[status]})`;
         updateDiagram(data.error_rate);
-        updateImage(data.image_name);
+        updateImage(data.image_path);
       });
   } catch (error) {
     console.log("Error fetching data: ", error);
@@ -105,7 +104,7 @@ const fetchData = async () => {
 
 function updateImage(imageName) {
   try {
-    printerImage.src = `${IMAGE_URL}${imageName}`;
+    printerImage.src = `${imageName}`;
   } catch (error) {
     console.log("Error updating image: ", error);
   }
@@ -116,14 +115,18 @@ function updateDiagram(errorRate) {
     const successRate = (1 - errorRate) * 100;
     const successSize = (successRate * 360) / 100;
 
-    const orangeStart = errorRate * 360 - 1;
+    const orangeStart = (1 - errorLimitRate) * 360 - 1;
     const orangeEnd = orangeStart + 2;
 
     const redStart = successSize;
     const redEnd = 360;
 
     let gradient;
-    if (!errorRate || typeof errorRate !== "number") {
+    if (
+      errorRate === undefined ||
+      errorRate === null ||
+      typeof errorRate !== "number"
+    ) {
       gradient = `
         conic-gradient(
           var(--gray) 0deg,
