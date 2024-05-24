@@ -20,7 +20,7 @@ class API(threading.Thread):
                 'is_running': settings.capture_is_running,
                 'states': {state.name: (settings.current_state == state) for state in settings.State},
                 'error_rate': settings.error_rate,
-                'image_path': settings.image_path,
+                'image_path': '/static/images/' + settings.image_name,
                 'confidence_threshold': settings.confidence_threshold
             })
 
@@ -41,7 +41,7 @@ class API(threading.Thread):
                 return jsonify({'message': 'Confidence threshold updated'}), 200
             except ValueError:
                 return jsonify({'error': 'Invalid input'}), 400
-        
+
     def run(self):
         self.app.run(host='0.0.0.0')
 

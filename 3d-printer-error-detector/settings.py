@@ -17,6 +17,7 @@ PIN_RED, PIN_GREEN, PIN_BLUE = 19, 13, 26
 PIN_BUTTON, PIN_RELAIS = 6, 4
 RUN_DURATION, PRINT_WARM_UP = 60, 300
 SLEEP_INTERVAL, CAPTURE_INTERVAL, SLEEP_LED = 5, 3, 0.1
+NUMBER_OF_IMAGES_RETAINED = 4
 MODEL = load_model('model.h5')
 
 def init():
@@ -27,5 +28,6 @@ def init():
     error_rate = None
     model_thread = None
     model_thread_running = True
+    image_name = None
     image_path = None
     confidence_threshold = 0.8

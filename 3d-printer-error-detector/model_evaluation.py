@@ -7,7 +7,7 @@ import settings
 
 def evaluate_model():
     if settings.current_state != State.ISSUE:
-        result = tools.predict_defect(MODEL, settings.image_name)
+        result = tools.predict_defect(MODEL, settings.image_path)
         print(result)
         settings.history.append(result)
         return State.CORRECT if result == "0" else State.ERROR
@@ -52,7 +52,7 @@ def stop():
         time.sleep(settings.SLEEP_LED)
         change_color(State.ERROR)
         time.sleep(settings.SLEEP_LED)
-    
+
 def restart():
     print("Restarting script...")
     change_color(State.OFF)
