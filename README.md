@@ -144,3 +144,24 @@ You can refer to the diagram below to understand all the interactions:
 
 
 We also provide a web interface available at this address [http://<ip_raspberry>:5000/](http://<ip_raspberry>:5000/) to get image feedback from the camera (useful for positioning it), modify the trigger threshold and perform an emergency stop.
+
+## Structure
+
+The structure of the project is as follows :
+
+- `3d-printer-error-detector`: This folder contains all the code and the Makefile for the 3D printer error detector project.
+- `ai-notebooks`: This folder contains the notebooks used to train the AI model and make predictions.
+
+`3d-printer-error-detector` is structured as follows:
+
+- `api.py`: This file contains the API endpoints for the web interface.
+- `button_listener.py`: This file handles the button events and controls the system state.
+- `color.py`: This file defines the color codes used by the RGB LED and the switch between them.
+- `gpio_setup.py`: This file sets up the GPIO pins for the components.
+- `main.py`: This file is the entry point of the application and starts the Flask server.
+- `model_evaluation.py`: This file contains functions for evaluating the machine learning model.
+- `settings.py`: This file contains the configuration settings for the application and the global variables for the different threads.
+- `tools.py`: This file contains utility functions to capture images and transform them to be used with the model.
+- `model.h5`: This file contains the weights and structure of the AI model.
+- `templates`: This folder contains the HTML templates for the web pages.
+- `static`: This folder contains static files such as CSS stylesheets and JavaScript files.
