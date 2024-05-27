@@ -23,5 +23,5 @@ def pulsing_light(color):
     while settings.history.count == 0 or settings.model_thread_running:
         change_color(color)
         time.sleep(settings.SLEEP_LED)
-        change_color(color)
+        change_color(State.OFF)
         time.sleep(settings.SLEEP_LED)
