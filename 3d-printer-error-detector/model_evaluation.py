@@ -33,7 +33,7 @@ def run():
             else:
                 print("Not enough elements in history for calculation.")
             time.sleep(SLEEP_INTERVAL)
-        if not settings.capture_is_running and settings.current_state != State.IDLE:
+        if not settings.capture_is_running and settings.current_state not in {State.IDLE, State.STOP, State.ISSUE}:
             color.change_color(State.IDLE)
 
 def stop():
@@ -41,7 +41,6 @@ def stop():
     color.change_color(State.ERROR)
     time.sleep(SLEEP_LED)
     GPIO.output(PIN_RELAIS, GPIO.LOW)
-    settings.pulsing = True
     color.pulsing_light(State.ERROR)
 
 def restart():
