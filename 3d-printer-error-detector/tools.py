@@ -3,6 +3,7 @@ import os
 import time
 import cv2
 import settings
+import color
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -48,3 +49,4 @@ def capture_image():
         except:
             cap.release()
             settings.current_state = settings.State.ISSUE
+            color.change_color(settings.current_state)
