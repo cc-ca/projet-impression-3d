@@ -6,10 +6,11 @@ import settings
 import color
 
 def evaluate_model():
-    result = tools.predict_defect(MODEL, settings.image_path)
-    print(result)
-    settings.history.append(result)
-    return State.CORRECT if result == "0" else State.ERROR
+    if settings.current_state in {State.STOP, State.ISSUE}:
+        result = tools.predict_defect(MODEL, settings.image_path)
+        print(result)
+        settings.history.append(result)
+        return State.CORRECT if result == "0" else State.ERROR
 
 def run():
     color.change_color(State.WARMUP)
@@ -45,7 +46,6 @@ def stop():
 
 def restart():
     print("Restarting script...")
-    settings.pulsing = False
     settings.current_state = State.IDLE
     time.sleep(SLEEP_RESTART)
     color.change_color(State.OFF)
