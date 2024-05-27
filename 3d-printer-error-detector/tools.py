@@ -1,10 +1,9 @@
-from PIL import Image
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 import time
-import settings
 import cv2
+import settings
+import color
 
 def load_and_preprocess_image(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -22,6 +21,9 @@ def capture_image():
     while True:
         try:
             cap = cv2.VideoCapture(0)  # Open default webcam
+            if not cap.isOpened():
+                raise Exception("Could not open video device")
+
             ret, frame = cap.read()
 
             static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static', 'images')
@@ -47,3 +49,4 @@ def capture_image():
         except:
             cap.release()
             settings.current_state = settings.State.ISSUE
+            color.pulsing_light(settings.current_state)

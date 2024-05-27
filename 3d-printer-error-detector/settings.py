@@ -16,18 +16,18 @@ RESTART_INTERVAL = 3
 PIN_RED, PIN_GREEN, PIN_BLUE = 19, 13, 26
 PIN_BUTTON, PIN_RELAIS = 6, 4
 RUN_DURATION, PRINT_WARM_UP = 60, 300
-SLEEP_INTERVAL, CAPTURE_INTERVAL, SLEEP_LED = 5, 3, 0.1
+SLEEP_INTERVAL, CAPTURE_INTERVAL, SLEEP_LED, SLEEP_RESTART = 5, 3, 0.1, 1
 NUMBER_OF_IMAGES_RETAINED = 4
 MODEL = load_model('model.h5')
 
 def init():
-    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_path, confidence_threshold
+    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_name, image_path, confidence_threshold
     history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
     current_state = State.IDLE
     capture_is_running = False
     error_rate = None
     model_thread = None
     model_thread_running = True
-    image_name = None
-    image_path = None
+    image_name = ''
+    image_path = ''
     confidence_threshold = 0.8
