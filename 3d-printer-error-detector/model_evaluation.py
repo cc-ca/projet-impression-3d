@@ -6,16 +6,15 @@ import settings
 import color
 
 def evaluate_model():
-    if settings.current_state != State.ISSUE:
-        result = tools.predict_defect(MODEL, settings.image_path)
-        print(result)
-        settings.history.append(result)
-        return State.CORRECT if result == "0" else State.ERROR
+    result = tools.predict_defect(MODEL, settings.image_path)
+    print(result)
+    settings.history.append(result)
+    return State.CORRECT if result == "0" else State.ERROR
 
 def run():
     color.change_color(State.WARMUP)
     while settings.model_thread_running:
-        if settings.capture_is_running:
+        if settings.capture_is_running and settings.current_state not in {State.ISSUE, State.STOP}:
             light = evaluate_model()
             color.change_color(State.OFF)
             time.sleep(SLEEP_LED)
@@ -41,10 +40,12 @@ def stop():
     color.change_color(State.ERROR)
     time.sleep(SLEEP_LED)
     GPIO.output(PIN_RELAIS, GPIO.LOW)
+    settings.pulsing = True
     color.pulsing_light(State.ERROR)
 
 def restart():
     print("Restarting script...")
+    settings.pulsing = False
     color.change_color(State.OFF)
     settings.capture_is_running = False
     settings.current_state = State.IDLE

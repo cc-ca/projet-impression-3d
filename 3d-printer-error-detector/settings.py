@@ -21,7 +21,7 @@ NUMBER_OF_IMAGES_RETAINED = 4
 MODEL = load_model('model.h5')
 
 def init():
-    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_name, image_path, confidence_threshold
+    global history, current_state, capture_is_running, error_rate, model_thread, model_thread_running, image_name, image_path, confidence_threshold, pulsing
     history = deque(maxlen=(RUN_DURATION // SLEEP_INTERVAL))
     current_state = State.IDLE
     capture_is_running = False
@@ -31,3 +31,4 @@ def init():
     image_name = ''
     image_path = ''
     confidence_threshold = 0.8
+    pulsing = False
