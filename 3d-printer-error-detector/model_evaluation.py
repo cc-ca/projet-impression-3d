@@ -6,7 +6,7 @@ import settings
 import color
 
 def evaluate_model():
-    if settings.current_state in {State.STOP, State.ISSUE}:
+    if settings.current_state not in {State.STOP, State.ISSUE}:
         result = tools.predict_defect(MODEL, settings.image_path)
         print(result)
         settings.history.append(result)
