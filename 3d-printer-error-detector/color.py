@@ -20,7 +20,7 @@ def change_color(state):
         GPIO.output(PIN_GREEN, GPIO.HIGH)
 
 def pulsing_light(color):
-    while settings.pulsing:
+    while settings.current_state in {State.STOP, State.ISSUE}:
         change_color(color)
         time.sleep(settings.SLEEP_LED)
         change_color(State.OFF)

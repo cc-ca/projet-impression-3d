@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
 import tools
-from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, MODEL, PIN_RELAIS
+from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, SLEEP_RESTART, MODEL, PIN_RELAIS
 import settings
 import color
 
@@ -46,9 +46,10 @@ def stop():
 def restart():
     print("Restarting script...")
     settings.pulsing = False
+    settings.current_state = State.IDLE
+    time.sleep(SLEEP_RESTART)
     color.change_color(State.OFF)
     settings.capture_is_running = False
-    settings.current_state = State.IDLE
     if settings.model_thread and settings.model_thread.is_alive():
         settings.model_thread_running = False
         settings.model_thread.join()

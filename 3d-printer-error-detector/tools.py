@@ -49,5 +49,4 @@ def capture_image():
         except:
             cap.release()
             settings.current_state = settings.State.ISSUE
-            settings.pulsing = True
             color.pulsing_light(settings.current_state)
