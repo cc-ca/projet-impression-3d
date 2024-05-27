@@ -4,7 +4,7 @@ import settings
 import time
 
 def change_color(state):
-    if settings.current_state not in {State.STOP, State.ISSUE}:
+    if settings.current_state not in {State.STOP, State.ISSUE, State.OFF}:
         settings.current_state = state
     GPIO.output(PIN_RED, GPIO.LOW)
     GPIO.output(PIN_GREEN, GPIO.LOW)
