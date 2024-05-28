@@ -86,7 +86,7 @@ You need to be able to connect to the operating system to perform the following 
 Connect to your raspberry with an administrator account and clone the repository in your personal directory:
 
 ```bash
-sudo apt install git
+sudo apt install git git-lfs
 git clone https://github.com/cc-ca/projet-impression-3d.git
 ```
 
