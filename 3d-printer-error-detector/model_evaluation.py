@@ -1,7 +1,7 @@
 import time
 import RPi.GPIO as GPIO
 import tools
-from settings import State, RUN_DURATION, SLEEP_INTERVAL, SLEEP_LED, SLEEP_RESTART, MODEL, PIN_RELAIS
+from settings import State, RUN_DURATION, SLEEP_INTERVAL, PRINT_WARM_UP, SLEEP_LED, SLEEP_RESTART, MODEL, PIN_RELAIS
 import settings
 import color
 
@@ -14,6 +14,7 @@ def evaluate_model():
 
 def run():
     color.change_color(State.WARMUP)
+    time.sleep(PRINT_WARM_UP)
     while settings.model_thread_running:
         if settings.capture_is_running and settings.current_state not in {State.ISSUE, State.STOP}:
             light = evaluate_model()
