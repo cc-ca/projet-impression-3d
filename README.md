@@ -46,7 +46,7 @@ The State diagram is used to describe the nominal process bellow:
 1. **Download Raspbian Lite**: Obtain the latest software package from the [official repository](https://www.raspberrypi.com/software/).
 2. **Install Git (optional)**:
    ```bash
-   sudo apt-get install git
+   sudo apt-get install git git-lfs
 3. **Clone the GitLab Repository**:
    ```bash
    git clone https://github.com/cc-ca/projet-impression-3d.git
