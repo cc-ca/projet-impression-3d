@@ -44,7 +44,3 @@ class API(threading.Thread):
 
     def run(self):
         self.app.run(host='0.0.0.0')
-
-if __name__ == '__main__':
-    api = API()
-    api.start()
