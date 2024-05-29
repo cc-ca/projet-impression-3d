@@ -21,6 +21,7 @@ def run():
             color.change_color(State.OFF)
             time.sleep(SLEEP_LED)
             color.change_color(light)
+            # To calculate the error rate, we need at least one full history cycle to not stop the printer because of some false positives
             if len(settings.history) >= (RUN_DURATION // SLEEP_INTERVAL - 1):
                 success_count = settings.history.count("0")
                 failure_count = settings.history.count("1")
@@ -41,6 +42,7 @@ def stop():
     settings.current_state, settings.model_thread_running, settings.capture_is_running = State.STOP, False, False
     color.change_color(State.ERROR)
     time.sleep(SLEEP_LED)
+    # We need to turn off the relay to stop the printer
     GPIO.output(PIN_RELAIS, GPIO.LOW)
     color.pulsing_light(State.ERROR)
 

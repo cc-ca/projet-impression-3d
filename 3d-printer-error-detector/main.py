@@ -19,6 +19,7 @@ if __name__ == "__main__":
         api = API()
         api.start()
         while True:
+            # Keep the main thread alive to keep the other threads running
             time.sleep(1)
     except KeyboardInterrupt:
         color.change_color(settings.State.OFF)

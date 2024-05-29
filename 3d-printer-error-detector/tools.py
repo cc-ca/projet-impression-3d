@@ -20,7 +20,7 @@ def predict_defect(model, image_path):
 def capture_image():
     while True:
         try:
-            cap = cv2.VideoCapture(0)  # Open default webcam
+            cap = cv2.VideoCapture(0)
             if not cap.isOpened():
                 raise Exception("Could not open video device")
 
@@ -30,7 +30,7 @@ def capture_image():
             if not os.path.exists(static_folder):
                 os.makedirs(static_folder)
 
-            # Remove old images
+            # Remove old images to only allow a small buffer of images and prevent disk space issues
             files = os.listdir(static_folder)
             files.sort()
             number_of_files = len(files)
