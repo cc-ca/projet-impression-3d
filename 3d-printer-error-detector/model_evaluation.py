@@ -58,4 +58,5 @@ def restart():
     settings.model_thread = None
     settings.history.clear()
     settings.error_rate = None
+    GPIO.output(PIN_RELAIS, GPIO.HIGH)
     color.change_color(State.IDLE)
